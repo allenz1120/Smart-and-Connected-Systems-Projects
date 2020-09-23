@@ -48,8 +48,10 @@ In order to coordinate the servo action with the end of the timer we used a larg
 ## Sketches and Photos
 <center><img src="./images/questone1.PNG" width="45%" /></center>  
 <center>With 31 seconds left on the timer, the servo is stationary and will not begin it's rotation routine until the timer hits 0 seconds </center>
-<img src="./images/questone2.jpg" width="45%" />
-<img src="./images/questone3.jpg" width="45%" />
+<row>
+  <img src="./images/questone2.JPG" width="45%" />
+<img src="./images/questone3.JPG" width="45%" />
+  </row>
 <center>A before and after feeding our fish when the timer is completed (*These photos were taken before our live demo so the time has a timer_pause() when the servo is running so it stops at 00:01. However, we have changed that and the video presentation has the non paused timer. </center>
 
 # Investigative question: What approach can you use to make setting the time interval dynamic (not hard coded)? Elaborate.
