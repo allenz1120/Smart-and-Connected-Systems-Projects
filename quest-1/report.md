@@ -46,7 +46,7 @@ In order to coordinate the servo action with the end of the timer we used a larg
 
 
 ## Sketches and Photos
-<center><img src="./images/questone1.png" width="45%" /></center>  
+<center><img src="./images/questone1.PNG" width="45%" /></center>  
 <center>TWith 31 seconds left on the timer, the servo is stationary and will not begin it's rotation routine until the timer hits 0 seconds </center>
 
 # Investigative question: What approach can you use to make setting the time interval dynamic (not hard coded)? Elaborate.
