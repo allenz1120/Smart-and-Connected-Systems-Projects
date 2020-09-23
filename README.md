@@ -3,7 +3,6 @@ Quests repository for Team 5
 
 # Overview:
 Using the ESP32 board’s built in timer, we created a countdown clock that descended from 120 seconds and rotated a servo 3 times upon hitting 0 seconds. This then loops back and continuously counts down the servo action from 2 minutes.
-Technical Details:
 
 # Timer:
 In order to utilize the ESP32’s timer, we first looked back to Skill 11 to understand how to initialize, start, pause, and modify its functionality. Then, we thought about how we wanted to use the timer in the context of the fish feeder. Since we wanted to feed our fat fish every 2 minutes, we initialized an integer counter variable at 120 seconds, decrementing it with every timer event, which we timed to occur every 1 second. Once the counter reaches 0, we use the timer_pause() function to stop the countdown and execute the servo functionality. Once the servo is done tipping food, we use the timer_start() function to begin counting again, reinitializing the counter integer to 120.
