@@ -49,11 +49,9 @@ In order to coordinate the servo action with the end of the timer we used a larg
 <center><img src="./images/questone1.PNG" width="45%" /></center>  
 <center>With 31 seconds left on the timer, the servo is stationary and will not begin it's rotation routine until the timer hits 0 seconds </center>
 <br>
-<row>
-  <img src="./images/questone2.JPG" width="45%" />
+<img src="./images/questone2.JPG" width="45%" />
 <img src="./images/questone3.JPG" width="45%" />
-  </row>
-<center>A before and after feeding our fish when the timer is completed (*These photos were taken before our live demo so the time has a timer_pause() when the servo is running so it stops at 00:01. However, we have changed that and the video presentation has the non paused timer. </center>
+<center>A before and after feeding our fish when the timer is completed (*These photos were taken before our live demo so the time has a timer_pause() when the servo is running so it stops at 00:01. However, we have changed that and the video presentation has the non paused timer) </center>
 
 # Investigative question: What approach can you use to make setting the time interval dynamic (not hard coded)? Elaborate.
 Instead of declaring our timer interval statically, we can get user input using the gets() function and prompt the user for their preferred time interval when the program runs. This will allow the users to customize their fish feeder and give them the choice to starve their fish with a 2 day feeding cycle or fatten them up with food every 10 seconds.
