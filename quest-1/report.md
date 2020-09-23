@@ -48,6 +48,7 @@ In order to coordinate the servo action with the end of the timer we used a larg
 ## Sketches and Photos
 <center><img src="./images/questone1.PNG" width="45%" /></center>  
 <center>With 31 seconds left on the timer, the servo is stationary and will not begin it's rotation routine until the timer hits 0 seconds </center>
+<br>
 <row>
   <img src="./images/questone2.JPG" width="45%" />
 <img src="./images/questone3.JPG" width="45%" />
