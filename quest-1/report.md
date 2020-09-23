@@ -27,9 +27,9 @@ Using the ESP32 board’s built in timer, we created a countdown clock that desc
 | Qualitative Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
 | Quality of solution | 4 |  5     | 
-| Quality of report.md including use of graphics |  |  3     | 
-| Quality of code reporting |  |  3     | 
-| Quality of video presentation |  |  3     | 
+| Quality of report.md including use of graphics | 3 |  3     | 
+| Quality of code reporting | 3 |  3     | 
+| Quality of video presentation | 3 |  3     | 
 
 
 ## Solution Design
@@ -49,6 +49,8 @@ In order to coordinate the servo action with the end of the timer we used a larg
 <center><img src="./images/ece444.png" width="25%" /></center>  
 <center> </center>
 
+# Investigative question: What approach can you use to make setting the time interval dynamic (not hard coded)? Elaborate.
+Instead of declaring our timer interval statically, we can get user input using the gets() function and prompt the user for their preferred time interval when the program runs. This will allow the users to customize their fish feeder and give them the choice to starve their fish with a 2 day feeding cycle or fatten them up with food every 10 seconds.
 
 ## Supporting Artifacts
 - [Link to video demo](). Not to exceed 120s
