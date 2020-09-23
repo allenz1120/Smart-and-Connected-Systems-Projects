@@ -1,4 +1,4 @@
-// Alex Prior
+// Anthony Biondo, Alex Prior, Allen Zou
 // 9/21/2020
 
 /*
@@ -10,6 +10,8 @@
   Emily Lam, September 2019
 
 */
+
+//Code chunks that we edited starts around line 367
 
 #include <stdio.h>
 #include "esp_types.h"
@@ -57,27 +59,28 @@ static const int RX_BUF_SIZE = 1024;
 #define NACK_VAL 0xFF                       // i2c nack value
 
 //You can get these value from the datasheet of servo you use, in general pulse width varies between 1000 to 2000 mocrosecond
-#define SERVO_MIN_PULSEWIDTH 300 //Minimum pulse width in microsecond
+#define SERVO_MIN_PULSEWIDTH 300  //Minimum pulse width in microsecond
 #define SERVO_MAX_PULSEWIDTH 2700 //Maximum pulse width in microsecond
-#define SERVO_MAX_DEGREE 90 //Maximum angle in degree upto which servo can rotate
+#define SERVO_MAX_DEGREE 90       //Maximum angle in degree upto which servo can rotate
 
 int counter = 120;
 uint16_t displaybuffer[8];
 
+//number to binary conversion from ADA fruit backpack for display
 static const uint16_t alphafonttable[] = {
 
-      0b0000110000111111, // 0
-      0b0000000000000110, // 1
-      0b0000000011011011, // 2
-      0b0000000010001111, // 3
-      0b0000000011100110, // 4
-      0b0010000001101001, // 5
-      0b0000000011111101, // 6
-      0b0000000000000111, // 7
-      0b0000000011111111, // 8
-      0b0000000011101111, // 9
+    0b0000110000111111, // 0
+    0b0000000000000110, // 1
+    0b0000000011011011, // 2
+    0b0000000010001111, // 3
+    0b0000000011100110, // 4
+    0b0010000001101001, // 5
+    0b0000000011111101, // 6
+    0b0000000000000111, // 7
+    0b0000000011111111, // 8
+    0b0000000011101111, // 9
 
-  };
+};
 
 // A simple structure to pass "events" to main task
 typedef struct
@@ -91,7 +94,7 @@ xQueueHandle timer_queue;
 static void mcpwm_example_gpio_initialize(void)
 {
     printf("initializing mcpwm servo control gpio......\n");
-    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, 26);    //Set GPIO 26 as PWM0A, to which servo is connected
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, 26); //Set GPIO 26 as PWM0A, to which servo is connected
 }
 
 /**
@@ -121,19 +124,21 @@ void mcpwm_example_servo_control(void *arg)
     //2. initial mcpwm configuration
     printf("Configuring Initial Parameters of mcpwm......\n");
     mcpwm_config_t pwm_config;
-    pwm_config.frequency = 50;    //frequency = 50Hz, i.e. for every servo motor time period should be 20ms
-    pwm_config.cmpr_a = 0;    //duty cycle of PWMxA = 0
-    pwm_config.cmpr_b = 0;    //duty cycle of PWMxb = 0
+    pwm_config.frequency = 50; //frequency = 50Hz, i.e. for every servo motor time period should be 20ms
+    pwm_config.cmpr_a = 0;     //duty cycle of PWMxA = 0
+    pwm_config.cmpr_b = 0;     //duty cycle of PWMxb = 0
     pwm_config.counter_mode = MCPWM_UP_COUNTER;
     pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
-    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);    //Configure PWM0A & PWM0B with above settings
-    while (1) {
-        for (count = 0; count < SERVO_MAX_DEGREE; count++) {
+    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config); //Configure PWM0A & PWM0B with above settings
+    while (1)
+    {
+        for (count = 0; count < SERVO_MAX_DEGREE; count++)
+        {
             printf("Angle of rotation: %d\n", count);
             angle = servo_per_degree_init(count);
             printf("pulse width: %dus\n", angle);
             mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle);
-            vTaskDelay(10);     //Add delay, since it takes time for servo to rotate, generally 100ms/60degree rotation at 5V
+            vTaskDelay(10); //Add delay, since it takes time for servo to rotate, generally 100ms/60degree rotation at 5V
         }
     }
 }
@@ -194,9 +199,6 @@ static void alarm_init()
     // Start timer
     timer_start(TIMER_GROUP_0, TIMER_0);
 
-    // Function to initiate i2c -- note the MSB declaration!
-    // Debug
-    // printf("\n>> i2c Config\n");
     int err;
 
     // Port configuration
@@ -304,10 +306,6 @@ static void test_alpha_display()
         printf("- brightness: max \n");
     }
     // Write to characters to buffer
-
-    
-
-    
 }
 
 int sendData(const char *logName, const char *data)
@@ -317,11 +315,6 @@ int sendData(const char *logName, const char *data)
     // ESP_LOGI(logName, "Wrote %d bytes", txBytes);
     return txBytes;
 }
-
-// static void IRAM_ATTR gpio_isr_handler(void *arg)
-// {              // Interrupt handler for your GPIO
-//     flag ^= 1; // Toggle state of flag
-// }
 
 // Utility  Functions //////////////////////////////////////////////////////////
 
@@ -357,7 +350,7 @@ static void i2c_scanner()
         printf("- No I2C devices found!"
                "\n");
     printf("\n");
-}   
+}
 
 // The main task of this example program
 static void timer_evt_task(void *arg)
@@ -370,7 +363,7 @@ static void timer_evt_task(void *arg)
         // Transfer from queue
         xQueueReceive(timer_queue, &evt, portMAX_DELAY);
 
-        // Do something if triggered!
+        // Decremenet counter if triggered
         if (evt.flag == 1)
         {
             counter--;
@@ -379,119 +372,100 @@ static void timer_evt_task(void *arg)
     }
     vTaskDelete(NULL);
 }
-static void IRAM_ATTR gpio_isr_handler(void *arg)
-{ // Interrupt handler for your GPIO
-    
-}
 
-static void buttonInterrupt()
+//This task is responsible for the servo motions when the timer is done counting down
+static void servoHandler()
 {
-    gpio_intr_enable(GPIOFLAG);
-    gpio_set_intr_type(GPIOFLAG, 1);
-    gpio_install_isr_service(ESP_INTR_FLAG_LEVEL3);
-    gpio_isr_handler_add(GPIOFLAG, gpio_isr_handler, (void *)GPIOFLAG);
+    //angle is the angle of rotation
+    uint32_t angle, count;
+    //1. mcpwm gpio initialization
+    mcpwm_example_gpio_initialize();
 
-    // while (1)
-    // {
-    //     if (resetFlag == 1)
-    //     {
-    //         gpio_set_level(GPIOFLAG, 1);
-    //         vTaskDelay(50);
-    //     }
-    //     else if (resetFlag == 0)
-    //     {
-    //         gpio_set_level(GPIOFLAG, 0);
-    //         vTaskDelay(50);
-    //     }
-    // }
-    vTaskDelete(NULL);
-}
+    //2. initial mcpwm configuration
+    printf("Configuring Initial Parameters of mcpwm......\n");
+    mcpwm_config_t pwm_config;
+    pwm_config.frequency = 50; //frequency = 50Hz, i.e. for every servo motor time period should be 20ms
+    pwm_config.cmpr_a = 0;     //duty cycle of PWMxA = 0
+    pwm_config.cmpr_b = 0;     //duty cycle of PWMxb = 0
+    pwm_config.counter_mode = MCPWM_UP_COUNTER;
+    pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
+    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config); //Configure PWM0A & PWM0B with above settings
 
-static void flagHandler()
-{
-    // if (counter == 0) {
-        uint32_t angle, count;
-        //1. mcpwm gpio initialization
-        mcpwm_example_gpio_initialize();
-
-        //2. initial mcpwm configuration
-        printf("Configuring Initial Parameters of mcpwm......\n");
-        mcpwm_config_t pwm_config;
-        pwm_config.frequency = 50;    //frequency = 50Hz, i.e. for every servo motor time period should be 20ms
-        pwm_config.cmpr_a = 0;    //duty cycle of PWMxA = 0
-        pwm_config.cmpr_b = 0;    //duty cycle of PWMxb = 0
-        pwm_config.counter_mode = MCPWM_UP_COUNTER;
-        pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
-        mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);    //Configure PWM0A & PWM0B with above settings
-        
-        uint32_t angle1;
-        angle1 = servo_per_degree_init(80);
-        uint32_t angle2;
-        angle2 = servo_per_degree_init(20);
+    uint32_t angle1;
+    angle1 = servo_per_degree_init(80);
+    uint32_t angle2;
+    angle2 = servo_per_degree_init(20);
     // }
 
-    while (1) {
-
-            if (counter == -1) {
-                counter = 120;
-                // timer_pause(TIMER_GROUP_0, TIMER_0);
-                mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle1);
-                vTaskDelay(100);
-                mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle2);
-                vTaskDelay(100);
-                mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle1);
-                vTaskDelay(100);
-                mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle2);
-                vTaskDelay(100);
-                mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle1);
-                vTaskDelay(100);
-                mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle2);
-                vTaskDelay(100);
-                // timer_start(TIMER_GROUP_0, TIMER_0);
-            }
+    while (1)
+    {
+        /* if the counter (timer) reaches -1, the counter will be set to 120 and the servo will rotate 
+        from 80 to 20 degrees and back three times */
+        if (counter == -1)
+        {
+            counter = 120;
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle1);
+            //vTaskDelay is so that the servo can finish moving and "wait" before starting the next rotation
+            vTaskDelay(100);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle2);
+            vTaskDelay(100);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle1);
+            vTaskDelay(100);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle2);
+            vTaskDelay(100);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle1);
+            vTaskDelay(100);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle2);
+            vTaskDelay(100);
+        }
     }
     vTaskDelete(NULL);
 }
 
-static void displayHandler() {
+//This task is responsible for displaying the current timer value on the alphanumeric display
+static void displayHandler()
+{
     int ret;
     ret = alpha_oscillator();
     char displayStr[4];
 
-    while (1) {
-            // Continually writes the same command
-            int minutes = (counter / 60) % 60;
-            int minutes1 = minutes / 10;
-            int minutes2 = minutes % 10;
+    while (1)
+    {
+        // minutes is the 2 digit representation of current minute value
+        int minutes = (counter / 60) % 60;
+        int minutes1 = minutes / 10; //left digit
+        int minutes2 = minutes % 10; //right digit
+        //seconds is the 2 digit representation of current second value
+        int seconds = counter % 60;
+        int seconds1 = seconds / 10; //left digit
+        int seconds2 = seconds % 10; //right digit
 
-            int seconds = counter % 60;
-            int seconds1 = seconds / 10;
-            int seconds2 = seconds % 10;
+        //references the global alphafonttable from the Adafruit backpack to get binary of number
+        if (counter < 3600)
+        {
+            displaybuffer[0] = alphafonttable[minutes2];
+            displaybuffer[1] = 0b0000100000000000; //binary for comma to separate min and sec
+            displaybuffer[2] = alphafonttable[seconds1];
+            displaybuffer[3] = alphafonttable[seconds2];
+        }
+        else
+        {
+            printf("Cannot display time\n");
+        }
 
-            if (counter < 3600) {
-                displaybuffer[0] = alphafonttable[minutes2];
-                displaybuffer[1] = 0b0000100000000000;
-                displaybuffer[2] = alphafonttable[seconds1];
-                displaybuffer[3] = alphafonttable[seconds2];
-            } else {
-                printf("Cannot display time\n");
-            }
-
-            // vTaskDelay(100);
-            // counter++;
-            // Send commands characters to display over I2C
-            i2c_cmd_handle_t cmd4 = i2c_cmd_link_create();
-            i2c_master_start(cmd4);
-            i2c_master_write_byte(cmd4, (SLAVE_ADDR << 1) | WRITE_BIT, ACK_CHECK_EN);
-            i2c_master_write_byte(cmd4, (uint8_t)0x00, ACK_CHECK_EN);
-            for (uint8_t i = 0; i < 8; i++)
-            {
-                i2c_master_write_byte(cmd4, displaybuffer[i] & 0xFF, ACK_CHECK_EN);
-                i2c_master_write_byte(cmd4, displaybuffer[i] >> 8, ACK_CHECK_EN);
-            }
-            i2c_master_stop(cmd4);
-            ret = i2c_master_cmd_begin(I2C_EXAMPLE_MASTER_NUM, cmd4, 1000 / portTICK_RATE_MS);
-            i2c_cmd_link_delete(cmd4);
+        // Send commands characters to display over I2C
+        i2c_cmd_handle_t cmd4 = i2c_cmd_link_create();
+        i2c_master_start(cmd4);
+        i2c_master_write_byte(cmd4, (SLAVE_ADDR << 1) | WRITE_BIT, ACK_CHECK_EN);
+        i2c_master_write_byte(cmd4, (uint8_t)0x00, ACK_CHECK_EN);
+        for (uint8_t i = 0; i < 8; i++)
+        {
+            i2c_master_write_byte(cmd4, displaybuffer[i] & 0xFF, ACK_CHECK_EN);
+            i2c_master_write_byte(cmd4, displaybuffer[i] >> 8, ACK_CHECK_EN);
+        }
+        i2c_master_stop(cmd4);
+        ret = i2c_master_cmd_begin(I2C_EXAMPLE_MASTER_NUM, cmd4, 1000 / portTICK_RATE_MS);
+        i2c_cmd_link_delete(cmd4);
     }
 }
 
@@ -504,8 +478,7 @@ void app_main(void)
     alarm_init();
     // Create task to handle timer-based events
     xTaskCreate(timer_evt_task, "timer_evt_task", 2048, NULL, 5, NULL);
-    // xTaskCreate(buttonInterrupt, "buttonInterrupt_task", 1024 * 2, NULL, configMAX_PRIORITIES, NULL);
-    xTaskCreate(flagHandler, "flagHandler_task", 1024 * 2, NULL, configMAX_PRIORITIES - 2, NULL);
+    xTaskCreate(servoHandler, "servoHandler_task", 1024 * 2, NULL, configMAX_PRIORITIES - 2, NULL);
     xTaskCreate(displayHandler, "displayHandler_task", 1024 * 2, NULL, configMAX_PRIORITIES - 1, NULL);
 
     ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0,
@@ -514,6 +487,4 @@ void app_main(void)
     /* Tell VFS to use UART driver */
     esp_vfs_dev_uart_use_driver(UART_NUM_0);
     i2c_scanner();
-
-    // xTaskCreate(test_alpha_display, "test_alpha_display", 4096, NULL, 5, NULL);
 }
