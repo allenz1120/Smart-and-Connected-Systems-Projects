@@ -46,9 +46,6 @@ In order to coordinate the servo action with the end of the timer we used a larg
 
 
 ## Sketches and Photos
-
-[Click here for Quest 1 Demo](https://drive.google.com/file/d/1JzEWCGhAjof0glUlmwND12N0k9ruO4DT/view?usp=sharing)
-
 <center><img src="./images/questone1.PNG" width="45%" /></center>  
 <center>With 31 seconds left on the timer, the servo is stationary and will not begin it's rotation routine until the timer hits 0 seconds </center>
 <br>
@@ -60,8 +57,7 @@ In order to coordinate the servo action with the end of the timer we used a larg
 Instead of declaring our timer interval statically, we can get user input using the gets() function and prompt the user for their preferred time interval when the program runs. This will allow the users to customize their fish feeder and give them the choice to starve their fish with a 2 day feeding cycle or fatten them up with food every 10 seconds.
 
 ## Supporting Artifacts
-- [Link to video demo](). Not to exceed 120s
-
+- [Click here for Quest 1 Demo](https://drive.google.com/file/d/1JzEWCGhAjof0glUlmwND12N0k9ruO4DT/view?usp=sharing)
 
 ## Modules, Tools, Source Used Including Attribution
 We worked with John Kircher who helped us with our thought process for this quest
