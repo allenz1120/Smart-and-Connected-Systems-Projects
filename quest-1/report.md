@@ -1,5 +1,5 @@
 # Quest Name
-Authors: Anthony Bionda, Alex Prior, Allen Zou
+Authors: Anthony Biondo, Alex Prior, Allen Zou
 
 Date: 2020-09-22
 -----
