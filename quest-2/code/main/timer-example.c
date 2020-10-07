@@ -51,9 +51,9 @@ char tempStr[5];
 //Thermistor ADC pin
 static const adc_channel_t thermistorChannel = ADC_CHANNEL_6;     //GPIO34 if ADC1
 // IR ADC pin
-// static const adc_channel_t irChannel = ADC_CHANNEL_7;     //GPIO35 if ADC1
+static const adc_channel_t irChannel = ADC_CHANNEL_4;             //GPIO32 if ADC1
 // Ultrasonic ADC pin
-// static const adc_channel_t ultrasonicChannel = ADC_CHANNEL_5;     //GPIO33 if ADC1
+static const adc_channel_t ultrasonicChannel = ADC_CHANNEL_5;     //GPIO33 if ADC1
 
 static const adc_atten_t atten = ADC_ATTEN_DB_11;       // Changed attenuation to extend range of measurement up to approx. 2600mV (Appears to accurately read input voltage up to at least 3300mV though)
 static const adc_unit_t unit = ADC_UNIT_1;
@@ -249,14 +249,85 @@ static void thermoHandler()
 // This task is responsible for reading the IR sensor data
 static void IRhandler()
 {
+    //Check if Two Point or Vref are burned into eFuse
+    check_efuse();
 
+    //Configure ADC
+    if (unit == ADC_UNIT_1) {
+        adc1_config_width(ADC_WIDTH_BIT_12);
+        adc1_config_channel_atten(irChannel, atten);
+    } else {
+        adc2_config_channel_atten((adc2_channel_t)irChannel, atten);
+    }
+
+    //Characterize ADC
+    adc_chars = calloc(1, sizeof(esp_adc_cal_characteristics_t));
+    esp_adc_cal_value_t val_type = esp_adc_cal_characterize(unit, atten, ADC_WIDTH_BIT_12, DEFAULT_VREF, adc_chars);
+    print_char_val_type(val_type);
+
+    //Continuously sample ADC1
+    while (1) {
+        uint32_t adc_reading = 0;
+        //Multisampling
+        for (int i = 0; i < NO_OF_SAMPLES; i++) {
+            if (unit == ADC_UNIT_1) {
+                adc_reading += adc1_get_raw((adc1_channel_t)irChannel);
+            } else {
+                int raw;
+                adc2_get_raw((adc2_channel_t)irChannel, ADC_WIDTH_BIT_12, &raw);
+                adc_reading += raw;
+            }
+        }
+        adc_reading /= NO_OF_SAMPLES;
+        //Convert adc_reading to voltage in mV
+        uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
+        uint32_t range = 146060 * (pow(voltage,-1.126));
+        printf("Raw: %d\tDistance: %dcm\n", adc_reading, range);
+        vTaskDelay(pdMS_TO_TICKS(2000));
+    }
 }
 
 //This task is responsible for reading the ultrasonic data
-// static void ultrasonicHandler()
-// {
-    
-// }
+static void ultrasonicHandler()
+{
+    //Check if Two Point or Vref are burned into eFuse
+    check_efuse();
+
+    //Configure ADC
+    if (unit == ADC_UNIT_1) {
+        adc1_config_width(ADC_WIDTH_BIT_12);
+        adc1_config_channel_atten(ultrasonicChannel, atten);
+    } else {
+        adc2_config_channel_atten((adc2_channel_t)ultrasonicChannel, atten);
+    }
+
+    //Characterize ADC
+    adc_chars = calloc(1, sizeof(esp_adc_cal_characteristics_t));
+    esp_adc_cal_value_t val_type = esp_adc_cal_characterize(unit, atten, ADC_WIDTH_BIT_12, DEFAULT_VREF, adc_chars);
+    print_char_val_type(val_type);
+
+    //Continuously sample ADC1
+    while (1) {
+        uint32_t adc_reading = 0;
+        //Multisampling
+        for (int i = 0; i < NO_OF_SAMPLES; i++) {
+            if (unit == ADC_UNIT_1) {
+                adc_reading += adc1_get_raw((adc1_channel_t)ultrasonicChannel);
+            } else {
+                int raw;
+                adc2_get_raw((adc2_channel_t)ultrasonicChannel, ADC_WIDTH_BIT_12, &raw);
+                adc_reading += raw;
+            }
+        }
+        adc_reading /= NO_OF_SAMPLES;
+        //Convert adc_reading to voltage in mV
+        uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
+        uint32_t vcm = 3.222;   //conversion to get volts per centimeter. This is found by 3.3V / 1024
+        uint32_t range = voltage / vcm; //calculation to get range in centimeters.
+        printf("Raw: %d\tCentimeters: %dcm\n", adc_reading, range);
+        vTaskDelay(pdMS_TO_TICKS(1000)); //2 second delay
+    }
+}
 
 void app_main(void)
 {
@@ -268,7 +339,8 @@ void app_main(void)
     // Create task to handle timer-based events
     // xTaskCreate(timer_evt_task, "timer_evt_task", 2048, NULL, 5, NULL);
     xTaskCreate(thermoHandler, "thermoHandler_task", 1024 * 2, NULL, configMAX_PRIORITIES - 2, NULL);
-    // xTaskCreate(displayHandler, "displayHandler_task", 1024 * 2, NULL, configMAX_PRIORITIES - 1, NULL);
+    xTaskCreate(ultrasonicHandler, "ultrasonicHandler_task", 1024 * 2, NULL, configMAX_PRIORITIES - 1, NULL);
+    xTaskCreate(IRhandler, "IRhandler_task", 1024 * 2, NULL, configMAX_PRIORITIES - 1, NULL);
 
     ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0,
                                         256, 0, 0, NULL, 0));
