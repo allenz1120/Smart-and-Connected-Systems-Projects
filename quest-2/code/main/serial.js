@@ -14,26 +14,28 @@ let thermistorData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let irData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let ultrasonicData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-port.on("readable", function () {
-  let data = String(port.read()).split(",");
-  // console.log(data.split(','));
-  if (data[0] == "Temperature") {
-    thermistorData.shift();
-    thermistorData.push(Number(data[1].slice(0, -2)));
-    // console.log('t', data[1].slice(0, -2))
-  } else if (data[0] == "irDistance") {
-    irData.shift();
-    irData.push(Number(data[1].slice(0, -2)));
-    // console.log('i', data[1].slice(0, -2))
-  } else if (data[0] == "ultraDistance") {
-    ultrasonicData.shift();
-    ultrasonicData.push(Number(data[1].slice(0, -2)));
-    // console.log('u', data[1].slice(0, -2))
-  }
-  // console.log('THERMISTOR', thermistorData);
-  // console.log('IR', irData);
-  // console.log('ULTRASONIC', ultrasonicData);
-});
+let test1 = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+
+// port.on("readable", function () {
+//   let data = String(port.read()).split(",");
+//   // console.log(data);
+//   if (data[0] == "Temperature") {
+//     thermistorData.shift();
+//     thermistorData.push(Number(data[1].slice(0, -2)));
+//     // console.log("t", data[1].slice(0, -2));
+//   } else if (data[0] == "irDistance") {
+//     irData.shift();
+//     irData.push(Number(data[1].slice(0, -2)));
+//     // console.log("i", data[1].slice(0, -2));
+//   } else if (data[0] == "ultraDistance") {
+//     ultrasonicData.shift();
+//     ultrasonicData.push(Number(data[1].slice(0, -2)));
+//     // console.log("u", data[1].slice(0, -2));
+//   }
+//   // console.log("THERMISTOR", thermistorData);
+//   // console.log("IR", irData);
+//   // console.log("ULTRASONIC", ultrasonicData);
+// });
 
 var chartSettings = {
   animationEnabled: true,
@@ -62,22 +64,22 @@ var chartSettings = {
       type: "spline",
       yValueFormatString: "#C",
       showInLegend: true,
-      dataPoints: thermistorData,
+      dataPoints: test1,
     },
-    {
-      name: "Infared Sensor",
-      type: "spline",
-      yValueFormatString: "#cm",
-      showInLegend: true,
-      dataPoints: irData,
-    },
-    {
-      name: "Ultrasonic Senor",
-      type: "spline",
-      yValueFormatString: "#cm",
-      showInLegend: true,
-      dataPoints: ultrasonicData,
-    },
+    // {
+    //   name: "Infared Sensor",
+    //   type: "spline",
+    //   yValueFormatString: "#cm",
+    //   showInLegend: true,
+    //   dataPoints: irData,
+    // },
+    // {
+    //   name: "Ultrasonic Senor",
+    //   type: "spline",
+    //   yValueFormatString: "#cm",
+    //   showInLegend: true,
+    //   dataPoints: ultrasonicData,
+    // },
   ],
 };
 
@@ -87,7 +89,7 @@ function toggleDataSeries(e) {
   } else {
     e.dataSeries.visible = true;
   }
-  chart.render();
+  // chart.render();
 }
 
 app.get("/", function (req, res) {
@@ -96,6 +98,7 @@ app.get("/", function (req, res) {
 
 app.get("/data", function (req, res) {
   res.send(chartSettings); // Send array of data back to requestor
+  console.log(chartSettings.data);
 });
 
 // io.on("connect", (socket) => {
