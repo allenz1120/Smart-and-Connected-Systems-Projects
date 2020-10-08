@@ -3,31 +3,26 @@
 
 <!DOCTYPE html>
 <html>
+  <head> </head>
 
-<head>
-
-</head>
-
-<body>
-  <div id="chartContainer" style="height: 370px; width: 100%"></div>
-  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <ul id="events"></ul>
-  <script>
-
-    $(function(){
-      const socket = io();
-
-      socket.on("", function (chartSettings) {
-        var chart = new CanvasJS.Chart("chartContainer", chartSettings);
-        console.log(chartSettings);
-        chart.render();
-      });
-    })
-    
-  </script>
-
-</body>
-
+  <body>
+    <div id="chartContainer" style="height: 370px; width: 100%"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <ul id="events"></ul>
+    <script>
+      setInterval(function () {
+        num = 1;
+        $.ajax({
+          url: "/data",
+          success: function (result) {
+            var chart = new CanvasJS.Chart("chartContainer", result);
+            console.log(result);
+            chart.render();
+          },
+        });
+      }, 2000);
+    </script>
+  </body>
 </html>
