@@ -13,7 +13,7 @@ Using the ESP32 and its built in ADC channels, we are able to read data from thr
 
 | Objective Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
-| Periodic reporting of ultrasonic range in m |  |  1     | 
+| Periodic reporting of ultrasonic range in m | 1 |  1     | 
 | Periodic reporting of IR range in m | 1 |  1     | 
 | Periodic reporting of temperature in C | 1 |  1     | 
 | Results displayed at host as text | 1 |  1     | 
