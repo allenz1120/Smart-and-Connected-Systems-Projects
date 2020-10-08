@@ -1,11 +1,11 @@
-# Quest Name
-Authors: FirstName1 LastName1, FirstName2 LastName2, FirstName3 LastName 3
+# Tactile Internet
+Authors: John Kircer, Alex Prior, Allen Zou
 
-Date: YYYY-MM-DD
+Date: 2020-10-08
 -----
 
 ## Summary
-
+Using the ESP32 and its built in ADC channels, we are able to read data from three sensors that report temperature and range data using ultrasonic and IR readings. In addition to that, we are able to visualize the data on a chart using CanvasJS in real time.
 
 ## Self-Assessment
 
@@ -13,13 +13,13 @@ Date: YYYY-MM-DD
 
 | Objective Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
-| Objective One |  |  1     | 
-| Objective Two |  |  1     | 
-| Objective Three |  |  1     | 
-| Objective Four |  |  1     | 
-| Objective Five |  |  1     | 
-| Objective Six |  |  1     | 
-| Objective Seven |  |  1     | 
+| Periodic reporting of ultrasonic range in m |  |  1     | 
+| Periodic reporting of IR range in m |  |  1     | 
+| Periodic reporting of temperature in C |  |  1     | 
+| Results displayed at host as text |  |  1     | 
+| Results graphed at host continuously based on reporting period |  |  1     | 
+| Demo delivered at scheduled time and report submitted in team folder with all required components |  |  1     | 
+| Investigative question response |  |  1     | 
 
 
 ### Qualitative Criteria
@@ -33,6 +33,20 @@ Date: YYYY-MM-DD
 
 
 ## Solution Design
+## ADC:
+This quest takes advantage of the ESP32’s ADC pins to read analog readings from external sensors and convert them into voltage readings that can be manipulated into more tangible data such as temperature or range. 
+
+## Sensors:
+To separate each sensor, we created individual tasks that would collect data and run simultaneously with one another. 
+
+The first of our sensors is the thermistor which we connected to ADC channel 6 or the GPIO34 pin. Every two seconds, we record the voltage data and determine the variable resistance and use the Simplified Steinhart-Hart equation to get the temperature reading.
+
+The next sensor is the IR range finder which is connected to ADC channel 4 or the GPIO32 pin. Like the thermistor, every two seconds, we get voltage data and using the IR rangefinder datasheet, we take the slope and y-intercept of the distance to voltage graphs to convert voltage into centimeters.
+
+Lastly, the Ultrasonic sensor is connected to ADC channel 5 or GPIO33. It records voltage data from the sensor every second and using the MaxSonar Datasheet, we calculate that the conversion from voltage to range requires a 3.222 mv/cm proportion.
+
+## CanvasJS:
+After converting these analog values into understandable units for humans, we visualize the data using CanvasJS. We then use node.js to act as a monitor for the ESP32 and read live data outside of the esp terminal. Once data is coming through, we parse it and populate it into arrays that can be passed into the HTML file. Then, in the HTML file we use jQuery ajax calls to request the data arrays to display on a dynamic line chart.
 
 
 
