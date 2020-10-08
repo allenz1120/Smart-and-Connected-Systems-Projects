@@ -14,12 +14,12 @@ Using the ESP32 and its built in ADC channels, we are able to read data from thr
 | Objective Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
 | Periodic reporting of ultrasonic range in m |  |  1     | 
-| Periodic reporting of IR range in m |  |  1     | 
-| Periodic reporting of temperature in C |  |  1     | 
-| Results displayed at host as text |  |  1     | 
-| Results graphed at host continuously based on reporting period |  |  1     | 
-| Demo delivered at scheduled time and report submitted in team folder with all required components |  |  1     | 
-| Investigative question response |  |  1     | 
+| Periodic reporting of IR range in m | 1 |  1     | 
+| Periodic reporting of temperature in C | 1 |  1     | 
+| Results displayed at host as text | 1 |  1     | 
+| Results graphed at host continuously based on reporting period | 0 |  1     | 
+| Demo delivered at scheduled time and report submitted in team folder with all required components | 1 |  1     | 
+| Investigative question response | 1 |  1     | 
 
 
 ### Qualitative Criteria
@@ -54,6 +54,9 @@ After converting these analog values into understandable units for humans, we vi
 <center><img src="./images/ece444.png" width="25%" /></center>  
 <center> </center>
 
+## Investigative Question
+Tabulate and compare the accuracy and speed of the IR and ultrasonic sensors. Which one would you prefer to use to support driving a robotic car?
+The ultrasonic sensor was much more accurate than the IR sensor. It was a lot more responsive to changes and was easier to locate where it was even pointing. A look at the Maxbotix website also states that IR is a more budget friendly version of range finding. If we are driving a robotic car, we would want it to be safer and more perceptive to obstacles so we want the ultrasonic sensor/ 
 
 ## Supporting Artifacts
 - [Link to video demo](). Not to exceed 120s
