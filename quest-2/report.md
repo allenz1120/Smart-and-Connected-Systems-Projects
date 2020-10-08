@@ -17,7 +17,7 @@ Using the ESP32 and its built in ADC channels, we are able to read data from thr
 | Periodic reporting of IR range in m | 1 |  1     | 
 | Periodic reporting of temperature in C | 1 |  1     | 
 | Results displayed at host as text | 1 |  1     | 
-| Results graphed at host continuously based on reporting period | 0 |  1     | 
+| Results graphed at host continuously based on reporting period | 1 |  1     | 
 | Demo delivered at scheduled time and report submitted in team folder with all required components | 1 |  1     | 
 | Investigative question response | 1 |  1     | 
 
@@ -26,10 +26,10 @@ Using the ESP32 and its built in ADC channels, we are able to read data from thr
 
 | Qualitative Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
-| Quality of solution |  |  5     | 
-| Quality of report.md including use of graphics |  |  3     | 
-| Quality of code reporting |  |  3     | 
-| Quality of video presentation |  |  3     | 
+| Quality of solution | 4 |  5     | 
+| Quality of report.md including use of graphics | 3 |  3     | 
+| Quality of code reporting | 3 |  3     | 
+| Quality of video presentation | 3 |  3     | 
 
 
 ## Solution Design
