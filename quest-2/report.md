@@ -51,9 +51,9 @@ After converting these analog values into understandable units for humans, we vi
 
 
 ## Sketches and Photos
-<center><img src="./images/setup.png" width="25%" /></center>  
-<center><img src="./images/chart.png" width="25%" /> </center>
-<center><img src="./images/chart2.png" width="25%" /> </center>
+<center><img src="./images/setup.jpg" width="25%" /></center>  
+<img src="./images/chart.png" width="50%" /> 
+<img src="./images/chart2.png" width="50%" /> 
 
 ## Investigative Question
 Tabulate and compare the accuracy and speed of the IR and ultrasonic sensors. Which one would you prefer to use to support driving a robotic car?
