@@ -1,29 +1,169 @@
-<!-- Alex Prior -->
-<!-- U54686687 -->
-
 <!DOCTYPE html>
 <html>
-  <head> </head>
-
-  <body>
-    <div id="chartContainer" style="height: 370px; width: 100%"></div>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
-    <ul id="events"></ul>
-    <p>Hewwo</p>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-      // setInterval(function () {
-      num = 1;
-      $.ajax({
-        url: "/data",
-        success: function (result) {
-          var chart = new CanvasJS.Chart("chartContainer", result);
-          console.log(result);
+      let thermistorData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      let irData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      let ultrasonicData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      var xVal = 10;
+      var yVal = 15;
+
+      window.onload = function () {
+        $.ajax({
+          url: "/data1",
+          async: false,
+          success: function (result) {
+            // chartSettings = result;
+            console.log(result);
+            thermistorData = result.slice(0);
+            console.log(thermistorData);
+          },
+        });
+
+        $.ajax({
+          url: "/data2",
+          async: false,
+          success: function (result) {
+            // chartSettings = result;
+            console.log(result);
+            irData = result.slice(0);
+          },
+        });
+
+        $.ajax({
+          url: "/data3",
+          async: false,
+          success: function (result) {
+            // chartSettings = result;
+            console.log(result);
+            ultrasonicData = result.slice(0);
+          },
+        });
+        console.log(thermistorData);
+        console.log(irData);
+        console.log(ultrasonicData);
+        var chart = new CanvasJS.Chart("chartContainer", {
+          animationEnabled: true,
+          title: {
+            text: "Thermistor : Ultrasonic : IR Rangefinder",
+          },
+          axisX: {
+            interval: 1,
+            intervalType: "Sensor Data",
+          },
+          axisY: {
+            title: "Temperature / Distance",
+            prefix: "",
+          },
+          legend: {
+            cursor: "pointer",
+            fontSize: 16,
+            itemclick: toggleDataSeries,
+          },
+          toolTip: {
+            shared: true,
+          },
+          data: [
+            {
+              name: "Thermistor",
+              type: "spline",
+              yValueFormatString: "#C",
+              showInLegend: true,
+              dataPoints: [
+                { x: 1, y: Number(thermistorData[0]) },
+                { x: 2, y: Number(thermistorData[1]) },
+                { x: 3, y: Number(thermistorData[2]) },
+                { x: 4, y: Number(thermistorData[3]) },
+                { x: 5, y: Number(thermistorData[4]) },
+                { x: 6, y: Number(thermistorData[5]) },
+                { x: 7, y: Number(thermistorData[6]) },
+                { x: 8, y: Number(thermistorData[7]) },
+                { x: 9, y: Number(thermistorData[8]) },
+                { x: 10, y: Number(thermistorData[9]) },
+              ],
+            },
+            {
+              name: "Infared Sensor",
+              type: "spline",
+              yValueFormatString: "#cm",
+              showInLegend: true,
+              dataPoints: [
+                { x: 1, y: Number(irData[0]) },
+                { x: 2, y: Number(irData[1]) },
+                { x: 3, y: Number(irData[2]) },
+                { x: 4, y: Number(irData[3]) },
+                { x: 5, y: Number(irData[4]) },
+                { x: 6, y: Number(irData[5]) },
+                { x: 7, y: Number(irData[6]) },
+                { x: 8, y: Number(irData[7]) },
+                { x: 9, y: Number(irData[8]) },
+                { x: 10, y: Number(irData[9]) },
+              ],
+            },
+            {
+              name: "Ultrasonic Senor",
+              type: "spline",
+              yValueFormatString: "#cm",
+              showInLegend: true,
+              dataPoints: [
+                { x: 1, y: Number(ultrasonicData[0]) },
+                { x: 2, y: Number(ultrasonicData[1]) },
+                { x: 3, y: Number(ultrasonicData[2]) },
+                { x: 4, y: Number(ultrasonicData[3]) },
+                { x: 5, y: Number(ultrasonicData[4]) },
+                { x: 6, y: Number(ultrasonicData[5]) },
+                { x: 7, y: Number(ultrasonicData[6]) },
+                { x: 8, y: Number(ultrasonicData[7]) },
+                { x: 9, y: Number(ultrasonicData[8]) },
+                { x: 10, y: Number(ultrasonicData[9]) },
+              ],
+            },
+          ],
+        });
+        chart.render();
+
+        var updateChart = function () {
+          yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
+          thermistorData.push({ x: xVal, y: yVal });
+          irData.push({ x: xVal, y: yVal });
+          ultrasonicData.push({ x: xVal, y: yVal });
+
+          xVal++;
+          if (
+            thermistorData.length > 10 ||
+            irData.length > 10 ||
+            ultrasonicData.length > 10
+          ) {
+            thermistorData.shift();
+            irData.shift();
+            ultrasonicData.shift();
+          }
+
           chart.render();
-        },
-      });
-      // }, 2000);
+
+          // update chart after specified time.
+        };
+        setInterval(function () {
+          updateChart();
+        }, 1000);
+
+        function toggleDataSeries(e) {
+          if (
+            typeof e.dataSeries.visible === "undefined" ||
+            e.dataSeries.visible
+          ) {
+            e.dataSeries.visible = false;
+          } else {
+            e.dataSeries.visible = true;
+          }
+          chart.render();
+        }
+      };
     </script>
+  </head>
+  <body>
+    <div id="chartContainer" style="height: 300px; width: 100%"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
   </body>
 </html>
