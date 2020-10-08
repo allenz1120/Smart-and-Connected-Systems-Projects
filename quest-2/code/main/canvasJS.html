@@ -1,0 +1,33 @@
+<!-- Alex Prior -->
+<!-- U54686687 -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+  <div id="chartContainer" style="height: 370px; width: 100%"></div>
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <ul id="events"></ul>
+  <script>
+
+    $(function(){
+      const socket = io();
+
+      socket.on("", function (chartSettings) {
+        var chart = new CanvasJS.Chart("chartContainer", chartSettings);
+        console.log(chartSettings);
+        chart.render();
+      });
+    })
+    
+  </script>
+
+</body>
+
+</html>
