@@ -41,51 +41,61 @@
 static esp_adc_cal_characteristics_t *adc_chars;
 
 // Thermistor initialization
-#define DEFAULT_VREF    1100        //Use adc2_vref_to_gpio() to obtain a better estimate
-#define NO_OF_SAMPLES   64          //Multisampling
+#define DEFAULT_VREF 1100 //Use adc2_vref_to_gpio() to obtain a better estimate
+#define NO_OF_SAMPLES 64  //Multisampling
 int counter = 1;
 int voltageRunSum = 0;
 int voltageAVG = 0;
 char tempStr[5];
 
 //Thermistor ADC pin
-static const adc_channel_t thermistorChannel = ADC_CHANNEL_6;     //GPIO34 if ADC1
+static const adc_channel_t thermistorChannel = ADC_CHANNEL_6; //GPIO34 if ADC1
 // IR ADC pin
-static const adc_channel_t irChannel = ADC_CHANNEL_4;             //GPIO32 if ADC1
+static const adc_channel_t irChannel = ADC_CHANNEL_4; //GPIO32 if ADC1
 // Ultrasonic ADC pin
-static const adc_channel_t ultrasonicChannel = ADC_CHANNEL_5;     //GPIO33 if ADC1
+static const adc_channel_t ultrasonicChannel = ADC_CHANNEL_5; //GPIO33 if ADC1
 
-static const adc_atten_t atten = ADC_ATTEN_DB_11;       // Changed attenuation to extend range of measurement up to approx. 2600mV (Appears to accurately read input voltage up to at least 3300mV though)
+static const adc_atten_t atten = ADC_ATTEN_DB_11; // Changed attenuation to extend range of measurement up to approx. 2600mV (Appears to accurately read input voltage up to at least 3300mV though)
 static const adc_unit_t unit = ADC_UNIT_1;
 
 static void check_efuse(void)
 {
     //Check TP is burned into eFuse
-    if (esp_adc_cal_check_efuse(ESP_ADC_CAL_VAL_EFUSE_TP) == ESP_OK) {
+    if (esp_adc_cal_check_efuse(ESP_ADC_CAL_VAL_EFUSE_TP) == ESP_OK)
+    {
         // printf("eFuse Two Point: Supported\n");
-    } else {
+    }
+    else
+    {
         // printf("eFuse Two Point: NOT supported\n");
     }
 
     //Check Vref is burned into eFuse
-    if (esp_adc_cal_check_efuse(ESP_ADC_CAL_VAL_EFUSE_VREF) == ESP_OK) {
+    if (esp_adc_cal_check_efuse(ESP_ADC_CAL_VAL_EFUSE_VREF) == ESP_OK)
+    {
         // printf("eFuse Vref: Supported\n");
-    } else {
+    }
+    else
+    {
         // printf("eFuse Vref: NOT supported\n");
     }
 }
 
 static void print_char_val_type(esp_adc_cal_value_t val_type)
 {
-    if (val_type == ESP_ADC_CAL_VAL_EFUSE_TP) {
+    if (val_type == ESP_ADC_CAL_VAL_EFUSE_TP)
+    {
         // printf("Characterized using Two Point Value\n");
-    } else if (val_type == ESP_ADC_CAL_VAL_EFUSE_VREF) {
+    }
+    else if (val_type == ESP_ADC_CAL_VAL_EFUSE_VREF)
+    {
         // printf("Characterized using eFuse Vref\n");
-    } else {
+    }
+    else
+    {
         // printf("Characterized using Default Vref\n");
     }
 }
-
 
 // // A simple structure to pass "events" to main task
 // typedef struct
@@ -182,10 +192,13 @@ static void thermoHandler()
     check_efuse();
 
     //Configure ADC
-    if (unit == ADC_UNIT_1) {
+    if (unit == ADC_UNIT_1)
+    {
         adc1_config_width(ADC_WIDTH_BIT_12);
         adc1_config_channel_atten(thermistorChannel, atten);
-    } else {
+    }
+    else
+    {
         adc2_config_channel_atten((adc2_channel_t)thermistorChannel, atten);
     }
 
@@ -195,13 +208,18 @@ static void thermoHandler()
     print_char_val_type(val_type);
 
     //Continuously sample ADC1
-    while (1) {
+    while (1)
+    {
         uint32_t adc_reading = 0;
         //Multisampling
-        for (int i = 0; i < NO_OF_SAMPLES; i++) {
-            if (unit == ADC_UNIT_1) {
+        for (int i = 0; i < NO_OF_SAMPLES; i++)
+        {
+            if (unit == ADC_UNIT_1)
+            {
                 adc_reading += adc1_get_raw((adc1_channel_t)thermistorChannel);
-            } else {
+            }
+            else
+            {
                 int raw;
                 adc2_get_raw((adc2_channel_t)thermistorChannel, ADC_WIDTH_BIT_12, &raw);
                 adc_reading += raw;
@@ -216,30 +234,31 @@ static void thermoHandler()
 
         // printf("Resistance: %f\n", resistance);
 
-        if (counter == 2) {
+        if (counter == 2)
+        {
             counter = 0;
-            float resistance = (10000*(3.3-voltage/1000.0))/(voltage/1000.0);
-            float temperature = 1.0 / ((1.0 / 298) + (1.0 / 3435.0) * log(resistance/10000.0)); // Simplified B-parameter Steinhart-Hart equation
+            float resistance = (10000 * (3.3 - voltage / 1000.0)) / (voltage / 1000.0);
+            float temperature = 1.0 / ((1.0 / 298) + (1.0 / 3435.0) * log(resistance / 10000.0)); // Simplified B-parameter Steinhart-Hart equation
             temperature -= 273.15;
 
-            printf("Temperature : %f\n", temperature);
+            printf("Temperature,%f\n", temperature);
             // snprintf(tempStr, sizeof(tempStr), "%.2f", temperature);
             // const int temp = uart_write_bytes(UART_NUM_1, tempStr, sizeof(tempStr));
 
             // voltageAVG = voltageRunSum / 10;
             // voltageRunSum = 0;
- 
+
             // int voltage1 = (voltageAVG / 1000) % 10;
             // int voltage2 = (voltageAVG / 100) % 10;
             // int voltage3 = (voltageAVG / 10) % 10;
             // int voltage4 = voltageAVG % 10;
             // printf("%d %d %d %d\n", voltage1, voltage2, voltage3, voltage4);
-            
+
             // Write to characters to buffer
-            // displaybuffer[0] = alphafonttable[voltage1];  
-            // displaybuffer[1] = alphafonttable[voltage2];  
-            // displaybuffer[2] = alphafonttable[voltage3];  
-            // displaybuffer[3] = alphafonttable[voltage4];  
+            // displaybuffer[0] = alphafonttable[voltage1];
+            // displaybuffer[1] = alphafonttable[voltage2];
+            // displaybuffer[2] = alphafonttable[voltage3];
+            // displaybuffer[3] = alphafonttable[voltage4];
         }
         vTaskDelay(pdMS_TO_TICKS(1000));
         counter++;
@@ -253,10 +272,13 @@ static void IRhandler()
     check_efuse();
 
     //Configure ADC
-    if (unit == ADC_UNIT_1) {
+    if (unit == ADC_UNIT_1)
+    {
         adc1_config_width(ADC_WIDTH_BIT_12);
         adc1_config_channel_atten(irChannel, atten);
-    } else {
+    }
+    else
+    {
         adc2_config_channel_atten((adc2_channel_t)irChannel, atten);
     }
 
@@ -266,13 +288,18 @@ static void IRhandler()
     print_char_val_type(val_type);
 
     //Continuously sample ADC1
-    while (1) {
+    while (1)
+    {
         uint32_t adc_reading = 0;
         //Multisampling
-        for (int i = 0; i < NO_OF_SAMPLES; i++) {
-            if (unit == ADC_UNIT_1) {
+        for (int i = 0; i < NO_OF_SAMPLES; i++)
+        {
+            if (unit == ADC_UNIT_1)
+            {
                 adc_reading += adc1_get_raw((adc1_channel_t)irChannel);
-            } else {
+            }
+            else
+            {
                 int raw;
                 adc2_get_raw((adc2_channel_t)irChannel, ADC_WIDTH_BIT_12, &raw);
                 adc_reading += raw;
@@ -281,8 +308,8 @@ static void IRhandler()
         adc_reading /= NO_OF_SAMPLES;
         //Convert adc_reading to voltage in mV
         uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
-        uint32_t range = 146060 * (pow(voltage,-1.126));
-        printf("Raw: %d\tDistance: %dcm\n", adc_reading, range);
+        uint32_t range = 146060 * (pow(voltage, -1.126));
+        printf("irDistance,%d\n", range);
         vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
@@ -294,10 +321,13 @@ static void ultrasonicHandler()
     check_efuse();
 
     //Configure ADC
-    if (unit == ADC_UNIT_1) {
+    if (unit == ADC_UNIT_1)
+    {
         adc1_config_width(ADC_WIDTH_BIT_12);
         adc1_config_channel_atten(ultrasonicChannel, atten);
-    } else {
+    }
+    else
+    {
         adc2_config_channel_atten((adc2_channel_t)ultrasonicChannel, atten);
     }
 
@@ -307,13 +337,18 @@ static void ultrasonicHandler()
     print_char_val_type(val_type);
 
     //Continuously sample ADC1
-    while (1) {
+    while (1)
+    {
         uint32_t adc_reading = 0;
         //Multisampling
-        for (int i = 0; i < NO_OF_SAMPLES; i++) {
-            if (unit == ADC_UNIT_1) {
+        for (int i = 0; i < NO_OF_SAMPLES; i++)
+        {
+            if (unit == ADC_UNIT_1)
+            {
                 adc_reading += adc1_get_raw((adc1_channel_t)ultrasonicChannel);
-            } else {
+            }
+            else
+            {
                 int raw;
                 adc2_get_raw((adc2_channel_t)ultrasonicChannel, ADC_WIDTH_BIT_12, &raw);
                 adc_reading += raw;
@@ -322,9 +357,9 @@ static void ultrasonicHandler()
         adc_reading /= NO_OF_SAMPLES;
         //Convert adc_reading to voltage in mV
         uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
-        uint32_t vcm = 3.222;   //conversion to get volts per centimeter. This is found by 3.3V / 1024
+        uint32_t vcm = 3.222;           //conversion to get volts per centimeter. This is found by 3.3V / 1024
         uint32_t range = voltage / vcm; //calculation to get range in centimeters.
-        printf("Raw: %d\tCentimeters: %dcm\n", adc_reading, range);
+        printf("ultraDistance,%d\n", range);
         vTaskDelay(pdMS_TO_TICKS(1000)); //2 second delay
     }
 }
