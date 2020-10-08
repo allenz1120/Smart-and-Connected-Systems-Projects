@@ -242,23 +242,6 @@ static void thermoHandler()
             temperature -= 273.15;
 
             printf("Temperature,%f\n", temperature);
-            // snprintf(tempStr, sizeof(tempStr), "%.2f", temperature);
-            // const int temp = uart_write_bytes(UART_NUM_1, tempStr, sizeof(tempStr));
-
-            // voltageAVG = voltageRunSum / 10;
-            // voltageRunSum = 0;
-
-            // int voltage1 = (voltageAVG / 1000) % 10;
-            // int voltage2 = (voltageAVG / 100) % 10;
-            // int voltage3 = (voltageAVG / 10) % 10;
-            // int voltage4 = voltageAVG % 10;
-            // printf("%d %d %d %d\n", voltage1, voltage2, voltage3, voltage4);
-
-            // Write to characters to buffer
-            // displaybuffer[0] = alphafonttable[voltage1];
-            // displaybuffer[1] = alphafonttable[voltage2];
-            // displaybuffer[2] = alphafonttable[voltage3];
-            // displaybuffer[3] = alphafonttable[voltage4];
         }
         vTaskDelay(pdMS_TO_TICKS(1000));
         counter++;
@@ -308,8 +291,9 @@ static void IRhandler()
         adc_reading /= NO_OF_SAMPLES;
         //Convert adc_reading to voltage in mV
         uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
-        uint32_t range = 146060 * (pow(voltage, -1.126));
-        printf("irDistance,%d\n", range);
+        float range = 146060 * (pow(voltage, -1.126));
+        range -= 50;
+        printf("irDistance,%.2f\n", range);
         vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
@@ -358,8 +342,9 @@ static void ultrasonicHandler()
         //Convert adc_reading to voltage in mV
         uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
         uint32_t vcm = 3.222;           //conversion to get volts per centimeter. This is found by 3.3V / 1024
-        uint32_t range = voltage / vcm; //calculation to get range in centimeters.
-        printf("ultraDistance,%d\n", range);
+        float range = voltage / vcm; //calculation to get range in centimeters.
+        range -= 30;
+        printf("ultraDistance,%.2f\n", range);
         vTaskDelay(pdMS_TO_TICKS(1000)); //2 second delay
     }
 }
@@ -367,12 +352,7 @@ static void ultrasonicHandler()
 void app_main(void)
 {
     // Create a FIFO queue for timer-based
-    // timer_queue = xQueueCreate(10, sizeof(timer_event_t));
 
-    // Initiate alarm using timer API
-    // init();
-    // Create task to handle timer-based events
-    // xTaskCreate(timer_evt_task, "timer_evt_task", 2048, NULL, 5, NULL);
     xTaskCreate(thermoHandler, "thermoHandler_task", 1024 * 2, NULL, configMAX_PRIORITIES - 2, NULL);
     xTaskCreate(ultrasonicHandler, "ultrasonicHandler_task", 1024 * 2, NULL, configMAX_PRIORITIES - 1, NULL);
     xTaskCreate(IRhandler, "IRhandler_task", 1024 * 2, NULL, configMAX_PRIORITIES - 1, NULL);
