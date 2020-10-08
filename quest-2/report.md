@@ -51,7 +51,9 @@ After converting these analog values into understandable units for humans, we vi
 
 
 ## Sketches and Photos
-<center><img src="./images/setup.jpg" width="25%" /></center>  
+Breadboard Setup:
+<center><img src="./images/setup.jpg" width="50%" /></center>  
+CanvasJS charts:
 <img src="./images/chart.png" width="50%" /> 
 <img src="./images/chart2.png" width="50%" /> 
 
@@ -60,7 +62,8 @@ Tabulate and compare the accuracy and speed of the IR and ultrasonic sensors. Wh
 The ultrasonic sensor was much more accurate than the IR sensor. It was a lot more responsive to changes and was easier to locate where it was even pointing. A look at the Maxbotix website also states that IR is a more budget friendly version of range finding. If we are driving a robotic car, we would want it to be safer and more perceptive to obstacles so we want the ultrasonic sensor/ 
 
 ## Supporting Artifacts
-- [Link to video demo](). Not to exceed 120s
+- [Link to video demo](https://drive.google.com/file/d/1S0a1OUo86MVyoaFrnBMyIMuOZZMKdgP6/view?usp=sharing
+).
 
 
 ## Modules, Tools, Source Used Including Attribution
