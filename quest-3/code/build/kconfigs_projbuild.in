@@ -1,4 +1,4 @@
-source "C:/Users/johnk/Desktop/esp-idf/components/app_update/Kconfig.projbuild"
-source "C:/Users/johnk/Desktop/esp-idf/components/bootloader/Kconfig.projbuild"
-source "C:/Users/johnk/Desktop/esp-idf/components/esptool_py/Kconfig.projbuild"
-source "C:/Users/johnk/Desktop/esp-idf/components/partition_table/Kconfig.projbuild"
+source "/Users/aprior/esp/esp-idf/components/app_update/Kconfig.projbuild"
+source "/Users/aprior/esp/esp-idf/components/bootloader/Kconfig.projbuild"
+source "/Users/aprior/esp/esp-idf/components/esptool_py/Kconfig.projbuild"
+source "/Users/aprior/esp/esp-idf/components/partition_table/Kconfig.projbuild"
