@@ -1,4 +1,3 @@
-const SerialPort = require("serialport");
 var fs = require("fs");
 const path = require("path");
 const express = require("express");
@@ -18,9 +17,12 @@ app.set("view engine", "hbs");
 app.set("views", viewsPath);
 app.use(express.static(publicDirPath));
 
+// Global variable to keep track of LED Button status
+let ledButtonPress = 0;
+
 // Port and IP
-var PORT = 3333;
-var HOST = "10.0.0.49";
+var PORT = 9001;
+var HOST = "192.168.1.125";
 
 // Create socket
 var server = dgram.createSocket("udp4");
@@ -33,12 +35,24 @@ server.on("listening", function () {
   );
 });
 
+// On connection, print out received message
+server.on('message', function (message, remote) {
+  console.log(remote.address + ':' + remote.port +' - ' + message);
+
+  // Send Ok acknowledgement
+  server.send("Ok!",remote.port,remote.address,function(error){
+    if(error){
+      console.log('MEH!');
+    }
+    else{
+      console.log('Sent: Ok!');
+    }
+  });
+
+});
+
 // Bind server to port and IP
 server.bind(PORT, HOST);
-
-const port = new SerialPort("/dev/cu.SLAB_USBtoUART", {
-  baudRate: 115200,
-});
 
 let data;
 let thermistorData = 0;
@@ -49,22 +63,22 @@ let accelRollData = 0;
 let accelPitchData = 0;
 
 //read data from ESP port
-port.on("readable", function () {
-  let data = String(port.read()).split(",");
-  if (data[0] == "Temperature") {
-    thermistorData = Number(data[1].slice(0, -2));
-  } else if (data[0] == "X") {
-    accelXData = Number(data[1].slice(0, -2));
-  } else if (data[0] == "Y") {
-    accelYData = Number(data[1].slice(0, -2));
-  } else if (data[0] == "Z") {
-    accelZData = Number(data[1].slice(0, -2));
-  } else if (data[0] == "Roll") {
-    accelRollData = Number(data[1].slice(0, -2));
-  } else if (data[0] == "Pitch") {
-    accelPitchData = Number(data[1].slice(0, -2));
-  }
-});
+// port.on("readable", function () {
+//   let data = String(port.read()).split(",");
+//   if (data[0] == "Temperature") {
+//     thermistorData = Number(data[1].slice(0, -2));
+//   } else if (data[0] == "X") {
+//     accelXData = Number(data[1].slice(0, -2));
+//   } else if (data[0] == "Y") {
+//     accelYData = Number(data[1].slice(0, -2));
+//   } else if (data[0] == "Z") {
+//     accelZData = Number(data[1].slice(0, -2));
+//   } else if (data[0] == "Roll") {
+//     accelRollData = Number(data[1].slice(0, -2));
+//   } else if (data[0] == "Pitch") {
+//     accelPitchData = Number(data[1].slice(0, -2));
+//   }
+// });
 
 //serves the html file on the client side
 app.get("/", function (req, res) {
@@ -72,15 +86,9 @@ app.get("/", function (req, res) {
 });
 
 app.get("/button", (req, res) => {
-  server.send("Message sent!", 3333, "10.0.0.49", function (error) {
-    if (error) {
-      console.log("MEH!");
-      res.send("dgram did not send successful");
-    } else {
-      console.log("Sent: Ok!");
-      res.send({ message: "dgram sent successful" });
-    }
-  });
+  //change button press variable to true
+  ledButtonPress=1;
+
 });
 
 // //Sends the thermistorData array
@@ -96,5 +104,5 @@ app.get("/button", (req, res) => {
 //   res.send(ultrasonicData); // Send array of data back to requestor
 // });
 
-//Serve on localhost:8080
+//Serve on localhost:8081
 app.listen(8081);
