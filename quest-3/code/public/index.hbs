@@ -4,51 +4,13 @@
     <title>Hurricane Box</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <script>
-      //   let thermistorData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      //   let irData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      //   let ultrasonicData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-      //   window.onload = function () {
-      //     $.ajax({
-      //       url: "/data1",
-      //       async: false,
-      //       success: function (result) {
-      //         // chartSettings = result;
-      //         // console.log(result);
-      //         thermistorData = result.slice(0);
-      //         // console.log(thermistorData);
-      //       },
-      //     });
-
-      //     $.ajax({
-      //       url: "/data2",
-      //       async: false,
-      //       success: function (result) {
-      //         // chartSettings = result;
-      //         // console.log(result);
-      //         irData = result.slice(0);
-      //       },
-      //     });
-
-      //     $.ajax({
-      //       url: "/data3",
-      //       async: false,
-      //       success: function (result) {
-      //         // chartSettings = result;
-      //         // console.log(result);
-      //         ultrasonicData = result.slice(0);
-      //       },
-      //     });
-      //   };
-      //
-    </script>
+   
   </head>
 
   <body>
     <div class="main-content">
       <p>Wow that's a big storm</p>
-      <img src="http://192.168.1.23:8081"></img>
+      <img src="http://192.168.1.112:8081"></img>
       <div>
         <div>
           <h1>Temperature</h1>
@@ -75,6 +37,95 @@
           <p id='accelp'></p>
         </div>
       </div>
+       <script>
+        //var temperature = document.querySelector('#temp');
+        //var accelerometerX = document.querySelector('#accelx');
+        //var accelerometerZ = document.querySelector('#accelz');
+        //var accelerometerY = document.querySelector('#accely');
+        //var accelerometerRoll = document.querySelector('#accelr');
+        //var accelerometerPitch = document.querySelector('#accelp');
+        //   let thermistorData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        //   let irData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        //   let ultrasonicData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+          window.onload = function () {
+            }
+
+          function fetchData(){
+            $.ajax({
+              url: "/data1",
+              async: false,
+              success: function (result) {
+                thermistorData = result;
+                //console.log(thermistorData);
+                if(thermistorData){
+                  document.getElementById('temp').innerHTML = thermistorData;
+                }
+              },
+            });
+
+            $.ajax({
+              url: "/data2",
+              async: false,
+              success: function (result) {
+                accelerometerX = result;
+                //console.log(accelerometerX);
+                if(accelerometerX){
+                  document.getElementById('accelx').innerHTML = accelerometerX;
+                }
+              },
+            });
+
+            $.ajax({
+              url: "/data3",
+              async: false,
+              success: function (result) {
+                accelerometerY = result;
+                //console.log(thermistorData);
+                if(thermistorData){
+                  document.getElementById('accely').innerHTML = accelerometerY;
+                }
+              },
+            });
+
+            $.ajax({
+              url: "/data4",
+              async: false,
+              success: function (result) {
+                accelerometerZ = result;
+                //console.log(thermistorData);
+                if(accelerometerZ){
+                  document.getElementById('accelz').innerHTML = accelerometerZ;
+                }
+              },
+            });
+
+            $.ajax({
+              url: "/data5",
+              async: false,
+              success: function (result) {
+                accelerometerRoll = result;
+               // console.log(thermistorData);
+                if(accelerometerRoll){
+                  document.getElementById('accelr').innerHTML = accelerometerRoll;
+                }
+              },
+            });
+
+            $.ajax({
+              url: "/data6",
+              async: false,
+              success: function (result) {
+                accelerometerPitch = result;
+               // console.log(thermistorData);
+                if(accelerometerPitch){
+                  document.getElementById('accelp').innerHTML = accelerometerPitch;
+                }
+              },
+            });
+          }
+          setInterval(fetchData, 500);
+    </script>
       <div>
         <p>Change Intensity</p>
         <button>Search</button>

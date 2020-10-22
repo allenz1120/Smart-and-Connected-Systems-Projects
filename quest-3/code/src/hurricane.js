@@ -6,6 +6,9 @@ const hbs = require("hbs");
 
 const app = express(); //doesn't take in args
 
+var payload = "";
+var data = []; // Array to store payload data from UDP datagram
+
 //Define paths
 const publicDirPath = path.join(__dirname, "../public");
 //this is optional (allows you to call views directory by another name) Make sure you use app.set('views',viewsPath)
@@ -20,9 +23,17 @@ app.use(express.static(publicDirPath));
 // Global variable to keep track of LED Button status
 let ledButtonPress = 0;
 
+// Global variables for sensor data
+let thermistorData = 0;
+let accelXData = 0;
+let accelYData = 0;
+let accelZData = 0;
+let accelRollData = 0;
+let accelPitchData = 0;
+
 // Port and IP
 var PORT = 9001;
-var HOST = "192.168.1.21";
+var HOST = "192.168.1.125";
 
 // Create socket
 var server = dgram.createSocket("udp4");
@@ -38,6 +49,8 @@ server.on("listening", function () {
 // On connection, print out received message
 server.on("message", function (message, remote) {
   console.log(remote.address + ":" + remote.port + " - " + message);
+  payload = message.toString();
+  console.log("Payload: ", payload);
 
   // Send Ok acknowledgement
   server.send("Ok!", remote.port, remote.address, function (error) {
@@ -45,38 +58,28 @@ server.on("message", function (message, remote) {
       console.log("MEH!");
     } else {
       console.log("Sent: Ok!");
+      data = payload.split(",");
+      console.log(data);
+
+      thermistorData = data[5];
+      accelXData = data[0];
+      accelYData = data[1];
+      accelZData = data[2];
+      accelRollData = data[3];
+      accelPitchData = data[4];
+
+      console.log(thermistorData);
+      console.log(accelXData);
+      console.log(accelYData);
+      console.log(accelZData);
+      console.log(accelRollData);
+      console.log(accelPitchData);
     }
   });
 });
 
 // Bind server to port and IP
 server.bind(PORT, HOST);
-
-let data;
-let thermistorData = 0;
-let accelXData = 0;
-let accelYData = 0;
-let accelZData = 0;
-let accelRollData = 0;
-let accelPitchData = 0;
-
-//read data from ESP port
-// port.on("readable", function () {
-//   let data = String(port.read()).split(",");
-//   if (data[0] == "Temperature") {
-//     thermistorData = Number(data[1].slice(0, -2));
-//   } else if (data[0] == "X") {
-//     accelXData = Number(data[1].slice(0, -2));
-//   } else if (data[0] == "Y") {
-//     accelYData = Number(data[1].slice(0, -2));
-//   } else if (data[0] == "Z") {
-//     accelZData = Number(data[1].slice(0, -2));
-//   } else if (data[0] == "Roll") {
-//     accelRollData = Number(data[1].slice(0, -2));
-//   } else if (data[0] == "Pitch") {
-//     accelPitchData = Number(data[1].slice(0, -2));
-//   }
-// });
 
 //serves the html file on the client side
 app.get("/", function (req, res) {
@@ -88,18 +91,29 @@ app.get("/button", (req, res) => {
   ledButtonPress = 1;
 });
 
-// //Sends the thermistorData array
-// app.get("/data1", function (req, res) {
-//   res.send(thermistorData); // Send array of data back to requestor
-// });
-// //Sends the irData array
-// app.get("/data2", function (req, res) {
-//   res.send(irData); // Send array of data back to requestor
-// });
-// //Sends the ultrasonicData array
-// app.get("/data3", function (req, res) {
-//   res.send(ultrasonicData); // Send array of data back to requestor
-// });
+// Data Routes
 
-//Serve on localhost:8081
-app.listen(8081);
+//Send thermistorData
+app.get("/data1", function (req, res) {
+  res.send(thermistorData);
+});
+//Send accelXData
+app.get("/data2", function (req, res) {
+  res.send(accelXData);
+});
+//Send accelYData
+app.get("/data3", function (req, res) {
+  res.send(accelYData);
+}); //Send accelZData
+app.get("/data4", function (req, res) {
+  res.send(accelZData);
+}); //Send accelRollData
+app.get("/data5", function (req, res) {
+  res.send(accelRollData);
+}); //Send accelPitchData
+app.get("/data6", function (req, res) {
+  res.send(accelPitchData);
+});
+
+//Serve on localhost:8080
+app.listen(8080);

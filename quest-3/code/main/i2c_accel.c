@@ -13,6 +13,7 @@
 
 //Code chunks that we edited starts around line 367
 
+
 #include <stdio.h>
 #include <math.h>
 #include "esp_types.h"
@@ -84,20 +85,28 @@ int ledOn = 0;
 #include "freertos/event_groups.h"
 // #include "addr_from_stdin.h"
 
+
 #if defined(CONFIG_EXAMPLE_IPV4)
 #define HOST_IP_ADDR CONFIG_EXAMPLE_IPV4_ADDR
 #elif defined(CONFIG_EXAMPLE_IPV6)
 #define HOST_IP_ADDR CONFIG_EXAMPLE_IPV6_ADDR
 #else
-#define HOST_IP_ADDR "192.168.1.21"
+#define HOST_IP_ADDR "192.168.1.125"
 #endif
 
 #define PORT 9001
 
 static const char *TAG = "example";
-static const char *payload = "Message from ESP32 ";
+static const char *payload = "";
 
-
+#define MAX 100
+char payTemp[MAX]="24.312342";
+char payX[MAX];
+char payY[MAX];
+char payZ[MAX];
+char payP[MAX];
+char payR[MAX];
+char fullPay[MAX];
 static void udp_client_task(void *pvParameters)
 {
     char rx_buffer[128];
@@ -135,7 +144,20 @@ static void udp_client_task(void *pvParameters)
         ESP_LOGI(TAG, "Socket created, sending to %s:%d", HOST_IP_ADDR, PORT);
 
         while (1) {
-
+            // fullPay=*payX+","+*payY+","+*payZ+","+*payR+","+*payP+","+*payTemp;
+            strcat(payX,",");
+            strcat(payX,payY);
+            strcat(payX,",");
+            strcat(payX,payZ);
+            strcat(payX,",");
+            strcat(payX,payR);
+            strcat(payX,",");
+            strcat(payX,payP);
+            strcat(payX,",");
+            strcat(payX,payTemp);
+            printf("--------------FULL PAY IS: %s \n",payX);
+            payload=payX;
+            printf("--------------PAYLOAD IS: %s \n",payload);
             int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
             if (err < 0) {
                 ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
@@ -155,9 +177,9 @@ static void udp_client_task(void *pvParameters)
             // Data received
             else {
                 rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
-                // if (rx_buffer == 0) {
-
-                // }
+                if (rx_buffer == 0) {
+                    break;
+                }
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
                 ESP_LOGI(TAG, "%s", rx_buffer);
                 if (strncmp(rx_buffer, "OK: ", 4) == 0) {
@@ -178,13 +200,26 @@ static void udp_client_task(void *pvParameters)
     vTaskDelete(NULL);
 }
 
+#include <string.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/event_groups.h"
+#include "esp_system.h"
+#include "esp_wifi.h"
+#include "esp_event.h"
+#include "esp_log.h"
+#include "nvs_flash.h"
+
+#include "lwip/err.h"
+#include "lwip/sys.h"
+
 /* The examples use WiFi configuration that you can set via project configuration menu
 
    If you'd rather not, just change the below entries to strings with
    the config you want - ie #define EXAMPLE_WIFI_SSID "mywifissid"
 */
-#define EXAMPLE_ESP_WIFI_SSID      "HomeNet"
-#define EXAMPLE_ESP_WIFI_PASS      "alex0201"
+#define EXAMPLE_ESP_WIFI_SSID      "Group_5"
+#define EXAMPLE_ESP_WIFI_PASS      "password"
 #define EXAMPLE_ESP_MAXIMUM_RETRY  4
 
 /* FreeRTOS event group to signal when we are connected*/
@@ -228,24 +263,14 @@ void wifi_init_sta(void)
 
     ESP_ERROR_CHECK(esp_netif_init());
 
-    // ESP_ERROR_CHECK(esp_event_loop_create_default());
+    //ESP_ERROR_CHECK(esp_event_loop_create_default());
     esp_netif_create_default_wifi_sta();
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-    esp_event_handler_instance_t instance_any_id;
-    esp_event_handler_instance_t instance_got_ip;
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,
-                                                        ESP_EVENT_ANY_ID,
-                                                        &event_handler,
-                                                        NULL,
-                                                        &instance_any_id));
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT,
-                                                        IP_EVENT_STA_GOT_IP,
-                                                        &event_handler,
-                                                        NULL,
-                                                        &instance_got_ip));
+    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
+    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL));
 
     wifi_config_t wifi_config = {
         .sta = {
@@ -288,11 +313,11 @@ void wifi_init_sta(void)
         ESP_LOGE(TAG, "UNEXPECTED EVENT");
     }
 
-    /* The event will not be processed after unregister */
-    ESP_ERROR_CHECK(esp_event_handler_instance_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, instance_got_ip));
-    ESP_ERROR_CHECK(esp_event_handler_instance_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, instance_any_id));
+    ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler));
+    ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler));
     vEventGroupDelete(s_wifi_event_group);
 }
+
 
 // Function to initiate i2c -- note the MSB declaration!
 static void i2c_master_init(){
@@ -479,6 +504,8 @@ void calcRP(float x, float y, float z){
   float pitch = atan2((-1*x) , sqrt(y*y + z*z)) * 57.3;
   printf("Roll,%.2f\n", roll);
   printf("Pitch,%.2f\n", pitch);
+  sprintf(payR, "%f",roll);
+  sprintf(payP, "%f",pitch);
 
 }
 
@@ -489,6 +516,10 @@ static void accelHandler() {
     float xVal, yVal, zVal;
     getAccel(&xVal, &yVal, &zVal);
     calcRP(xVal, yVal, zVal);
+    sprintf(payX, "%f",xVal);
+    sprintf(payY, "%f",yVal);
+    sprintf(payZ, "%f",zVal);
+    
     vTaskDelay(pdMS_TO_TICKS(2000));
   }
 
@@ -609,7 +640,12 @@ static void thermoHandler()
             float temperature = 1.0 / ((1.0 / 298) + (1.0 / 3435.0) * log(resistance / 10000.0)); // Simplified B-parameter Steinhart-Hart equation
             temperature -= 273.15;
 
+            sprintf(payTemp, "%f",temperature);
+
             printf("Temperature,%f\n", temperature);
+            //strcat((char*)&temperature, payload);
+            printf("Payload: %s\n", payload);
+            
         }
         vTaskDelay(pdMS_TO_TICKS(2000));
         counter++;
