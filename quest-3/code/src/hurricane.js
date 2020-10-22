@@ -22,7 +22,7 @@ let ledButtonPress = 0;
 
 // Port and IP
 var PORT = 9001;
-var HOST = "192.168.1.125";
+var HOST = "192.168.1.21";
 
 // Create socket
 var server = dgram.createSocket("udp4");
@@ -36,19 +36,17 @@ server.on("listening", function () {
 });
 
 // On connection, print out received message
-server.on('message', function (message, remote) {
-  console.log(remote.address + ':' + remote.port +' - ' + message);
+server.on("message", function (message, remote) {
+  console.log(remote.address + ":" + remote.port + " - " + message);
 
   // Send Ok acknowledgement
-  server.send("Ok!",remote.port,remote.address,function(error){
-    if(error){
-      console.log('MEH!');
-    }
-    else{
-      console.log('Sent: Ok!');
+  server.send("Ok!", remote.port, remote.address, function (error) {
+    if (error) {
+      console.log("MEH!");
+    } else {
+      console.log("Sent: Ok!");
     }
   });
-
 });
 
 // Bind server to port and IP
@@ -87,8 +85,7 @@ app.get("/", function (req, res) {
 
 app.get("/button", (req, res) => {
   //change button press variable to true
-  ledButtonPress=1;
-
+  ledButtonPress = 1;
 });
 
 // //Sends the thermistorData array

@@ -1,13 +1,13 @@
 # Target labels
  bootloader
 # Source files and their labels
-C:/Users/johnk/Documents/GitHub/Team5-Biondo-Prior-Zou/quest-3/code/build/CMakeFiles/bootloader
-C:/Users/johnk/Documents/GitHub/Team5-Biondo-Prior-Zou/quest-3/code/build/CMakeFiles/bootloader.rule
-C:/Users/johnk/Documents/GitHub/Team5-Biondo-Prior-Zou/quest-3/code/build/CMakeFiles/bootloader-complete.rule
-C:/Users/johnk/Documents/GitHub/Team5-Biondo-Prior-Zou/quest-3/code/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
-C:/Users/johnk/Documents/GitHub/Team5-Biondo-Prior-Zou/quest-3/code/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
-C:/Users/johnk/Documents/GitHub/Team5-Biondo-Prior-Zou/quest-3/code/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
-C:/Users/johnk/Documents/GitHub/Team5-Biondo-Prior-Zou/quest-3/code/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
-C:/Users/johnk/Documents/GitHub/Team5-Biondo-Prior-Zou/quest-3/code/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
-C:/Users/johnk/Documents/GitHub/Team5-Biondo-Prior-Zou/quest-3/code/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
-C:/Users/johnk/Documents/GitHub/Team5-Biondo-Prior-Zou/quest-3/code/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+/Users/aprior/esp/esp-idf/code-examples/i2c-accel/build/CMakeFiles/bootloader
+/Users/aprior/esp/esp-idf/code-examples/i2c-accel/build/CMakeFiles/bootloader.rule
+/Users/aprior/esp/esp-idf/code-examples/i2c-accel/build/CMakeFiles/bootloader-complete.rule
+/Users/aprior/esp/esp-idf/code-examples/i2c-accel/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+/Users/aprior/esp/esp-idf/code-examples/i2c-accel/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+/Users/aprior/esp/esp-idf/code-examples/i2c-accel/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+/Users/aprior/esp/esp-idf/code-examples/i2c-accel/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
+/Users/aprior/esp/esp-idf/code-examples/i2c-accel/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+/Users/aprior/esp/esp-idf/code-examples/i2c-accel/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+/Users/aprior/esp/esp-idf/code-examples/i2c-accel/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
