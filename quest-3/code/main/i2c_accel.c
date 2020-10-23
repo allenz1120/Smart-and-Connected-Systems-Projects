@@ -182,8 +182,11 @@ static void udp_client_task(void *pvParameters)
                 }
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
                 ESP_LOGI(TAG, "%s", rx_buffer);
-                if (strncmp(rx_buffer, "OK: ", 4) == 0) {
-                    ESP_LOGI(TAG, "Received expected message, reconnecting");
+                if (strcmp(rx_buffer, "STAY") == 0) {
+                    ESP_LOGI(TAG, "Toggle LED");
+                    break;
+                } else if (strcmp(rx_buffer, "TOGGLE") == 0) {
+                    ESP_LOGI(TAG, "Hold LED");
                     break;
                 }
             }

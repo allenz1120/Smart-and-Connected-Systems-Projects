@@ -53,29 +53,56 @@ server.on("message", function (message, remote) {
   console.log("Payload: ", payload);
 
   // Send Ok acknowledgement
-  server.send("Ok!", remote.port, remote.address, function (error) {
-    if (error) {
-      console.log("MEH!");
-    } else {
-      console.log("Sent: Ok!");
-      data = payload.split(",");
-      console.log(data);
+  if (ledButtonPress == 1) {
+    server.send("TOGGLE", remote.port, remote.address, function (error) {
+      ledButtonPress = 0;
+      if (error) {
+        console.log("MEH!");
+      } else {
+        console.log("Sent: Ok!");
+        data = payload.split(",");
+        console.log(data);
 
-      thermistorData = data[5];
-      accelXData = data[0];
-      accelYData = data[1];
-      accelZData = data[2];
-      accelRollData = data[3];
-      accelPitchData = data[4];
+        thermistorData = data[5];
+        accelXData = data[0];
+        accelYData = data[1];
+        accelZData = data[2];
+        accelRollData = data[3];
+        accelPitchData = data[4];
 
-      console.log(thermistorData);
-      console.log(accelXData);
-      console.log(accelYData);
-      console.log(accelZData);
-      console.log(accelRollData);
-      console.log(accelPitchData);
-    }
-  });
+        console.log(thermistorData);
+        console.log(accelXData);
+        console.log(accelYData);
+        console.log(accelZData);
+        console.log(accelRollData);
+        console.log(accelPitchData);
+      }
+    });
+  } else if (ledButtonPress == 0) {
+    server.send("STAY", remote.port, remote.address, function (error) {
+      if (error) {
+        console.log("MEH!");
+      } else {
+        console.log("Sent: Ok!");
+        data = payload.split(",");
+        console.log(data);
+
+        thermistorData = data[5];
+        accelXData = data[0];
+        accelYData = data[1];
+        accelZData = data[2];
+        accelRollData = data[3];
+        accelPitchData = data[4];
+
+        console.log(thermistorData);
+        console.log(accelXData);
+        console.log(accelYData);
+        console.log(accelZData);
+        console.log(accelRollData);
+        console.log(accelPitchData);
+      }
+    });
+  }
 });
 
 // Bind server to port and IP
