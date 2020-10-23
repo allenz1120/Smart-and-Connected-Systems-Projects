@@ -75,7 +75,7 @@ What are steps you can take to make your device and system low power? Please cit
 
 
 ## Supporting Artifacts
-- [Link to video demo](). Not to exceed 120s
+- [Link to video demo](https://drive.google.com/file/d/1f9fklLlsxecqIVp7K62db-wnEkJHCFs1/preview).
 
 
 ## Modules, Tools, Source Used Including Attribution
