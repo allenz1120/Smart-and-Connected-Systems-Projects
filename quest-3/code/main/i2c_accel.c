@@ -33,13 +33,17 @@
 #include "esp_adc_cal.h"
 #include "./ADXL343.h"
 
-
+#include <ctype.h>
+#include <stdlib.h>
+#include "driver/uart.h"
+#include "sdkconfig.h"
 
 #define TIMER_DIVIDER 16                             //  Hardware timer clock divider
 #define TIMER_SCALE (TIMER_BASE_CLK / TIMER_DIVIDER) // to seconds
 #define TIMER_INTERVAL_SEC (1)                       // Sample test interval for the first timer
 #define TEST_WITH_RELOAD 1                           // Testing will be done with auto reload
 #define GPIOFLAG 14
+#define BLINK_GPIO 13
 
 #define I2C_EXAMPLE_MASTER_SCL_IO          22   // gpio number for i2c clk
 #define I2C_EXAMPLE_MASTER_SDA_IO          23   // gpio number for i2c data
@@ -58,7 +62,9 @@
 #define SLAVE_ADDR                         ADXL343_ADDRESS // 0x53
 
 // Global variable to keep track of LED status
-int ledOn = 0;
+
+int flag = 0;
+
 
 /* BSD Socket API Example
    This example code is in the Public Domain (or CC0 licensed, at your option.)
@@ -91,7 +97,7 @@ int ledOn = 0;
 #elif defined(CONFIG_EXAMPLE_IPV6)
 #define HOST_IP_ADDR CONFIG_EXAMPLE_IPV6_ADDR
 #else
-#define HOST_IP_ADDR "192.168.1.125"
+#define HOST_IP_ADDR "192.168.1.9"
 #endif
 
 #define PORT 9001
@@ -107,14 +113,21 @@ char payZ[MAX];
 char payP[MAX];
 char payR[MAX];
 char fullPay[MAX];
+// static const char nkMessage[128]="Nk!";
+// static const char okMessage[128]="Ok!";
+
 static void udp_client_task(void *pvParameters)
 {
     char rx_buffer[128];
     char host_ip[] = HOST_IP_ADDR;
     int addr_family = 0;
     int ip_protocol = 0;
+    gpio_reset_pin(BLINK_GPIO);
+    gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
+    int ledOn = 0;
 
     while (1) {
+
 
 // #if defined(CONFIG_EXAMPLE_IPV4)
         struct sockaddr_in dest_addr;
@@ -155,9 +168,9 @@ static void udp_client_task(void *pvParameters)
             strcat(payX,payP);
             strcat(payX,",");
             strcat(payX,payTemp);
-            printf("--------------FULL PAY IS: %s \n",payX);
+            // printf("--------------FULL PAY IS: %s \n",payX);
             payload=payX;
-            printf("--------------PAYLOAD IS: %s \n",payload);
+            // printf("--------------PAYLOAD IS: %s \n",payload);
             int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
             if (err < 0) {
                 ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
@@ -182,13 +195,28 @@ static void udp_client_task(void *pvParameters)
                 }
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
                 ESP_LOGI(TAG, "%s", rx_buffer);
-                if (strncmp(rx_buffer, "OK: ", 4) == 0) {
+                printf(rx_buffer);
+                printf("-----------------");
+                if(strncmp(rx_buffer, "Ok!", 3) == 0) {
+                    // ledOn = 1;
+                    printf("TOGGLED--------------");
                     ESP_LOGI(TAG, "Toggle LED");
-                    break;
+                    if (ledOn==0){
+                        gpio_set_level(BLINK_GPIO, 1);
+                        ledOn=1;
+                    }
+                    else if (ledOn==1){
+                        gpio_set_level(BLINK_GPIO, 0);
+                        ledOn=0;
+                    }
+                    //break;
                 
-                } else if (strncmp(rx_buffer, "NK: ", 4) == 0) {
+                
+                } else if(strncmp(rx_buffer, "Nk!", 3) == 0){
+                    printf("STAYING--------------");
                     ESP_LOGI(TAG, "Hold LED");
-                    break;
+                    
+                    //break;
                 }
             }
 
@@ -222,8 +250,8 @@ static void udp_client_task(void *pvParameters)
    If you'd rather not, just change the below entries to strings with
    the config you want - ie #define EXAMPLE_WIFI_SSID "mywifissid"
 */
-#define EXAMPLE_ESP_WIFI_SSID      "Group_5"
-#define EXAMPLE_ESP_WIFI_PASS      "password"
+#define EXAMPLE_ESP_WIFI_SSID      "5N8FF"
+#define EXAMPLE_ESP_WIFI_PASS      "65WWQYDWC3L77SYR"
 #define EXAMPLE_ESP_MAXIMUM_RETRY  4
 
 /* FreeRTOS event group to signal when we are connected*/
@@ -712,4 +740,20 @@ void app_main(void)
 
     xTaskCreate(udp_client_task, "udp_client", 4096, NULL, 5, NULL);
 
+    
+
+    
+    // gpio_pad_select_gpio(BLINK_GPIO);
+   
+    
+        // if (ledOn == 1) {
+        // gpio_set_level(BLINK_GPIO, 1);
+        // } else if (ledOn == 0) {
+        //     gpio_set_level(BLINK_GPIO, 0);
+        // } 
+       
+        
+        
+    
+    
 }

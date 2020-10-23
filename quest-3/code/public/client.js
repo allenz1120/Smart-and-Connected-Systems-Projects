@@ -6,7 +6,7 @@ button.addEventListener("click", (e) => {
   e.preventDefault();
   //console.log("BUTTON PRESSED");
 
-  fetch("http://192.168.1.125:8080/button").then((response)=>{
+  fetch("http://rettopyrrah.ddns.net:1130/button").then((response)=>{
     response.json().then((data) => {
       console.log(data.message);
     })

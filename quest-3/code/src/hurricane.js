@@ -33,7 +33,7 @@ let accelPitchData = 0;
 
 // Port and IP
 var PORT = 9001;
-var HOST = "192.168.1.125";
+var HOST = "192.168.1.9";
 
 // Create socket
 var server = dgram.createSocket("udp4");
@@ -147,4 +147,4 @@ app.get("/data6", function (req, res) {
 });
 
 //Serve on localhost:8080
-app.listen(8080);
+app.listen(1130);
