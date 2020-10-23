@@ -53,29 +53,56 @@ server.on("message", function (message, remote) {
   console.log("Payload: ", payload);
 
   // Send Ok acknowledgement
-  server.send("Ok!", remote.port, remote.address, function (error) {
-    if (error) {
-      console.log("MEH!");
-    } else {
-      console.log("Sent: Ok!");
-      data = payload.split(",");
-      console.log(data);
+  if (ledButtonPress == 1) {
+    ledButtonPress = 0;
+    server.send("Ok!", remote.port, remote.address, function (error) {
+      if (error) {
+        console.log("MEH!");
+      } else {
+        console.log("Sent: Ok!");
+        data = payload.split(",");
+        console.log(data);
 
-      thermistorData = data[5];
-      accelXData = data[0];
-      accelYData = data[1];
-      accelZData = data[2];
-      accelRollData = data[3];
-      accelPitchData = data[4];
+        thermistorData = data[5];
+        accelXData = data[0];
+        accelYData = data[1];
+        accelZData = data[2];
+        accelRollData = data[3];
+        accelPitchData = data[4];
 
-      console.log(thermistorData);
-      console.log(accelXData);
-      console.log(accelYData);
-      console.log(accelZData);
-      console.log(accelRollData);
-      console.log(accelPitchData);
-    }
-  });
+        console.log(thermistorData);
+        console.log(accelXData);
+        console.log(accelYData);
+        console.log(accelZData);
+        console.log(accelRollData);
+        console.log(accelPitchData);
+      }
+    });
+  } else if (ledButtonPress == 0) {
+    server.send("Nk!", remote.port, remote.address, function (error) {
+      if (error) {
+        console.log("MEH!");
+      } else {
+        console.log("Sent: Nk!");
+        data = payload.split(",");
+        console.log(data);
+
+        thermistorData = data[5];
+        accelXData = data[0];
+        accelYData = data[1];
+        accelZData = data[2];
+        accelRollData = data[3];
+        accelPitchData = data[4];
+
+        console.log(thermistorData);
+        console.log(accelXData);
+        console.log(accelYData);
+        console.log(accelZData);
+        console.log(accelRollData);
+        console.log(accelPitchData);
+      }
+    });
+  }
 });
 
 // Bind server to port and IP
@@ -88,7 +115,11 @@ app.get("/", function (req, res) {
 
 app.get("/button", (req, res) => {
   //change button press variable to true
+  console.log("BUTTON PRESSED");
   ledButtonPress = 1;
+  res.send({
+    message:"YEET"
+  });
 });
 
 // Data Routes
