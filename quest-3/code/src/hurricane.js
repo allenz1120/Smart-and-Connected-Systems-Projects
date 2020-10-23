@@ -54,7 +54,7 @@ server.on("message", function (message, remote) {
 
   // Send Ok acknowledgement
   if (ledButtonPress == 1) {
-    server.send("TOGGLE", remote.port, remote.address, function (error) {
+    server.send("Ok!", remote.port, remote.address, function (error) {
       ledButtonPress = 0;
       if (error) {
         console.log("MEH!");
@@ -79,11 +79,11 @@ server.on("message", function (message, remote) {
       }
     });
   } else if (ledButtonPress == 0) {
-    server.send("STAY", remote.port, remote.address, function (error) {
+    server.send("Nk!", remote.port, remote.address, function (error) {
       if (error) {
         console.log("MEH!");
       } else {
-        console.log("Sent: Ok!");
+        console.log("Sent: Nk!");
         data = payload.split(",");
         console.log(data);
 
