@@ -1,4 +1,4 @@
-# Quest Name
+# Hurricane Box with Remote Access
 Authors: Allen Zou, Alex Prior, John Kircher
 
 Date: 2020-10-23
@@ -52,8 +52,22 @@ To set up the webcam stream, we followed the tutorial on hackster.io (in attribu
 
 
 ## Sketches and Photos
-<center><img src="./images/ece444.png" width="25%" /></center>  
-<center> </center>
+Breadboard Setup:
+<br>
+<img src="./images/breadboard.jpg" width="50%" />
+<img src="./images/breadboard2.jpg" width="50%" />
+<br>
+RaspberryPi Setup:
+<br>
+<img src="./images/raspberrypi.jpg" width="50%" /> 
+<br>
+Terminal Output During Testing:
+<br>
+<img src="./images/terminal.PNG" width="50%" /> 
+<br>
+Webpage Layout:
+<br>
+<img src="./images/website.png" width="50%" /> 
 
 ## Investigative Question
 What are steps you can take to make your device and system low power? Please cite sources for you answer.
