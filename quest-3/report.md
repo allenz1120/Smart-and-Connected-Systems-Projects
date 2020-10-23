@@ -13,13 +13,13 @@ The goal of this quest was to take thermistor and accelerometer data from the ES
 
 | Objective Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
-| Objective One | 1 |  1     | 
-| Objective Two | 1 |  1     | 
-| Objective Three | 1 |  1     | 
-| Objective Four | 1 |  1     | 
-| Objective Five | 1 |  1     | 
-| Objective Six | 1 |  1     | 
-| Objective Seven | 1 |  1     | 
+| Measures acceleration, temperature, and battery level | 1 |  1     | 
+| Displays real-time data (temperature, vibration, battery level) at remote client via portal using separate IP network. | 1 |  1     | 
+| Controls LED on box from remote client via portal.  | 1 |  1     | 
+| Sources web cam video into remote client. | 1 |  1     | 
+| ESP32 and Rpi are connected wirelessly to (or as) router; ESP32 sensor data are delivered to local node server (on local laptop or Rpi) | 1 |  1     | 
+| Demo delivered at scheduled time and report submitted in team folder with all required components | 1 |  1     | 
+| Investigative question response | 1 |  1     | 
 
 
 ### Qualitative Criteria
@@ -54,6 +54,10 @@ To set up the webcam stream, we followed the tutorial on hackster.io (in attribu
 ## Sketches and Photos
 <center><img src="./images/ece444.png" width="25%" /></center>  
 <center> </center>
+
+## Investigative Question
+What are steps you can take to make your device and system low power? Please cite sources for you answer.
+
 
 
 ## Supporting Artifacts
