@@ -54,8 +54,8 @@ server.on("message", function (message, remote) {
 
   // Send Ok acknowledgement
   if (ledButtonPress == 1) {
+    ledButtonPress = 0;
     server.send("Ok!", remote.port, remote.address, function (error) {
-      ledButtonPress = 0;
       if (error) {
         console.log("MEH!");
       } else {
@@ -115,7 +115,11 @@ app.get("/", function (req, res) {
 
 app.get("/button", (req, res) => {
   //change button press variable to true
+  console.log("BUTTON PRESSED");
   ledButtonPress = 1;
+  res.send({
+    message:"YEET"
+  });
 });
 
 // Data Routes
