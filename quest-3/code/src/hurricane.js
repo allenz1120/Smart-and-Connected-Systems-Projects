@@ -53,12 +53,25 @@ server.on("message", function (message, remote) {
   console.log("Payload: ", payload);
 
   // Send Ok acknowledgement
-  server.send(ledButtonPress, remote.port, remote.address, function (error) {
-    if (error) {
-      console.log("MEH!");
-    } else {
-      console.log("Sent: Ok!");
-      ledButtonPress = 0;
+  if (ledButtonPress == 1) {
+    server.send("TOGGLE", remote.port, remote.address, function (error) {
+      if (error) {
+        console.log("MEH!");
+      } else {
+        console.log("Sent: Ok!");
+        ledButtonPress = 0;
+      }
+  })
+} else if (ledButtonPress == 0) {
+      server.send("STAY", remote.port, remote.address, function (error) {
+        if (error) {
+          console.log("MEH!");
+        } else {
+          console.log("Sent: Ok!");
+          
+        }
+  })
+} 
 
       data = payload.split(",");
       console.log(data);
@@ -76,8 +89,6 @@ server.on("message", function (message, remote) {
       console.log(accelZData);
       console.log(accelRollData);
       console.log(accelPitchData);
-    }
-  });
 });
 
 // Bind server to port and IP
@@ -91,6 +102,7 @@ app.get("/", function (req, res) {
 app.get("/button", (req, res) => {
   //change button press variable to true
   ledButtonPress = 1;
+  console.log(ledButtonPress);
 });
 
 // Data Routes

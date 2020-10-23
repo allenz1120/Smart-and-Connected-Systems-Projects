@@ -9,7 +9,7 @@ button.addEventListener("click", (e) => {
   console.log("BUTTON PRESSED");
 
 
-  fetch("http://localhost:8081/button").then((response) => {
+  fetch("http://192.168.1.125:8080/button").then((response) => {
     response.json().then((data) => {
       console.log(data.message);
       
