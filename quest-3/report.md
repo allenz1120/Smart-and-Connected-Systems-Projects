@@ -33,6 +33,21 @@ The goal of this quest was to take thermistor and accelerometer data from the ES
 
 
 ## Solution Design
+# Thermistor and Accelerometer:
+It was quick and easy to set up the accelerometer for this quest. We chose to work off the same codebase from Skill 24, using the i2c_accel.c file provided in the code-examples directory. By doing this, the accelerometer data was already being converted into engineering units and printed to the terminal, providing us with a great launching point.
+
+It was similarly quick and easy to set up the thermistor for this quest. We chose to recycle our Skill 13 code, pasting it into our i2c_accel.c codebase and successfully getting the thermistor data to print to the terminal. Once we had both thermistor and accelerometer data printing to terminal from the same program, we began to focus on sending the data wirelessly to our NodeJS server.
+
+# Sending UDP Messages between ESP and NodeJS server:
+We chose to use UDP sockets to send data over the network to our NodeJS server. In order to do this, we needed to connect the ESP32 to the network wirelessly. To do this, we used the code from Skill 22 to connect to our router.
+
+Once it was connected to the network, we established a UDP client on the ESP to package the thermistor and accelerometer data into a single payload that can be sent to a UDP server listening from NodeJS every 0.5 seconds. On the NodeJS server, we configured the UDP server to receive the payload, parse it, and store the thermistor data, X, Y, and Z values, pitch, and roll in unique variables that are used to dynamically update div tags on the front end.
+
+# Button and LED:
+To toggle the LED, we used a button on the HTML page. The button is bound to the client side javascript using a document.querySelector and has an event listener that waits for a user click. Once it is clicked, the client side javascript makes a fetch call to a route on the server side to turn on a flag variable. The flag variable will then respond to the ESP with a UDP response of “Ok!”, which causes an event on the ESP C file to toggle the LED. 
+
+# Presenting Data and Video Stream:
+To set up the webcam stream, we followed the tutorial on hackster.io (in attributions). It is served on port 8081 and updates at a 10 frames per second. To add it into our webpage, we create an img tag that points port 8081 on the DDNS server. It will update live with the webstream but has delays due to the slow frame rate.
 
 
 
@@ -46,6 +61,16 @@ The goal of this quest was to take thermistor and accelerometer data from the ES
 
 
 ## Modules, Tools, Source Used Including Attribution
+Whizzer Socket Brief: http://whizzer.bu.edu/briefs/design-patterns/dp-sockets
+Motion webcam: https://www.hackster.io/narender-singh/portable-video-streaming-camera-with-raspberry-pi-zero-w-dc22fd
+Skills 13, 22, 24 code
+ADC Guide from Whizzer: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/adc.html
+ADC example code: https://github.com/espressif/esp-idf/tree/39f090a4f1dee4e325f8109d880bf3627034d839/examples/peripherals/adc
+Wifi Station Sample Code: https://github.com/espressif/esp-idf/tree/master/examples/wifi/getting_started/station
+Tilt_Sensing: https://wiki.dfrobot.com/How_to_Use_a_Three-Axis_Accelerometer_for_Tilt_Sensing
+ADXL343 Sample Code: https://github.com/BU-EC444/code-examples/tree/master/i2c-accel
+ADXL343 Datasheet: https://cdn-learn.adafruit.com/assets/assets/000/070/556/original/adxl343.pdf?1549287964
+
 
 ## References
 
