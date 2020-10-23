@@ -53,11 +53,13 @@ server.on("message", function (message, remote) {
   console.log("Payload: ", payload);
 
   // Send Ok acknowledgement
-  server.send("Ok!", remote.port, remote.address, function (error) {
+  server.send(ledButtonPress, remote.port, remote.address, function (error) {
     if (error) {
       console.log("MEH!");
     } else {
       console.log("Sent: Ok!");
+      ledButtonPress = 0;
+
       data = payload.split(",");
       console.log(data);
 
