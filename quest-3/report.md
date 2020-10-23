@@ -61,15 +61,15 @@ To set up the webcam stream, we followed the tutorial on hackster.io (in attribu
 
 
 ## Modules, Tools, Source Used Including Attribution
-Whizzer Socket Brief: http://whizzer.bu.edu/briefs/design-patterns/dp-sockets
-Motion webcam: https://www.hackster.io/narender-singh/portable-video-streaming-camera-with-raspberry-pi-zero-w-dc22fd
-Skills 13, 22, 24 code
-ADC Guide from Whizzer: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/adc.html
-ADC example code: https://github.com/espressif/esp-idf/tree/39f090a4f1dee4e325f8109d880bf3627034d839/examples/peripherals/adc
-Wifi Station Sample Code: https://github.com/espressif/esp-idf/tree/master/examples/wifi/getting_started/station
-Tilt_Sensing: https://wiki.dfrobot.com/How_to_Use_a_Three-Axis_Accelerometer_for_Tilt_Sensing
-ADXL343 Sample Code: https://github.com/BU-EC444/code-examples/tree/master/i2c-accel
-ADXL343 Datasheet: https://cdn-learn.adafruit.com/assets/assets/000/070/556/original/adxl343.pdf?1549287964
+- Whizzer Socket Brief: http://whizzer.bu.edu/briefs/design-patterns/dp-sockets
+- Motion webcam: https://www.hackster.io/narender-singh/portable-video-streaming-camera-with-raspberry-pi-zero-w-dc22fd
+- Skills 13, 22, 24 code
+- ADC Guide from Whizzer: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/adc.html
+- ADC example code: https://github.com/espressif/esp-idf/tree/39f090a4f1dee4e325f8109d880bf3627034d839/examples/peripherals/adc
+- Wifi Station Sample Code: https://github.com/espressif/esp-idf/tree/master/examples/wifi/getting_started/station
+- Tilt_Sensing: https://wiki.dfrobot.com/How_to_Use_a_Three-Axis_Accelerometer_for_Tilt_Sensing
+- ADXL343 Sample Code: https://github.com/BU-EC444/code-examples/tree/master/i2c-accel
+- ADXL343 Datasheet: https://cdn-learn.adafruit.com/assets/assets/000/070/556/original/adxl343.pdf?1549287964
 
 
 ## References
