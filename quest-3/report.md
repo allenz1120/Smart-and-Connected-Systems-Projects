@@ -71,8 +71,11 @@ Webpage Layout:
 
 ## Investigative Question
 What are steps you can take to make your device and system low power? Please cite sources for you answer.
+Research has determined that a bulk of wireless sensor network power consumption comes from trasnmitting data rather than the expected data collection. One way that we can decrease the power consumption is to implement cluster based protocols such as Low Energy Adaptive Clustering Hierarchy Protocol (LEACH) or Virtual Grid based Dynamic Routes Adjustment (VGDRA). By clustering sensor data and sending it from only one node the network and determine the most optimal times to send data and minimize how many times we have to trasmit back and forth. This will allow the system to have steady states where it can "rest" and conserve energy.
 
-
+Sources for this answer: 
+- https://link.springer.com/article/10.1007/s00779-019-01205-4
+- https://www.sciencedirect.com/science/article/pii/S131915781730023X
 
 ## Supporting Artifacts
 - [Link to video demo](https://drive.google.com/file/d/1f9fklLlsxecqIVp7K62db-wnEkJHCFs1/preview).
