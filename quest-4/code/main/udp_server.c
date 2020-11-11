@@ -108,12 +108,19 @@ typedef enum
 } state_e;
 
 char status[MAX] = "No_Leader";
-char myID[MAX] = "2";
+char myID[MAX] = "1";
 char deviceAge[MAX] = "New";
 char data[MAX];
 char leaderHeartbeat[MAX] = "Dead";
 state_e deviceState = ELECTION_STATE;
 char transmitting[MAX] = "Yes";
+
+char IPtable[3][20] = {
+    "192.168.1.171",
+    "192.168.1.165",
+    "192.168.1.166"};
+
+#define NUM_FOBS 3
 
 // Default ID/color
 #define ID 1
@@ -717,112 +724,129 @@ static void udp_server_task(void *pvParameters)
 }
 
 //UDP client
-#define HOST_IP_ADDR "192.168.1.171"
+char HOST_IP_ADDR[MAX] = "192.168.1.171";
 #define PORT2 9002
 
-static void udp_client_task(void *pvParameters)
+static void
+udp_client_task(void *pvParameters)
 {
     char rx_buffer[128];
-    char host_ip[] = HOST_IP_ADDR;
+    // char host_ip[] = HOST_IP_ADDR;
     int addr_family = 0;
     int ip_protocol = 0;
 
     while (1)
     {
-
+        printf("-------------------------------- \n");
+        for (int i = 0; i < NUM_FOBS; i++)
+        {
+            printf("i is %d \n", i);
+        }
+        for (int i = 0; i < NUM_FOBS; i++)
+        {
+            printf("HELLOOOOOOOOOOOOOOOOOOOOOOOOO \n");
+            if (i == atoi(myID))
+            {
+                printf("SAME IP ADDRESS =========================  \n");
+                continue;
+            }
+            printf("COPYING THE IP TO HOST_IP and it is %s ========================= \n", IPtable[i]);
+            strcpy(HOST_IP_ADDR, IPtable[i]);
 #if defined(CONFIG_EXAMPLE_IPV4)
-        struct sockaddr_in dest_addr;
-        dest_addr.sin_addr.s_addr = inet_addr(HOST_IP_ADDR);
-        dest_addr.sin_family = AF_INET;
-        dest_addr.sin_port = htons(PORT2);
-        addr_family = AF_INET;
-        ip_protocol = IPPROTO_IP;
+            struct sockaddr_in dest_addr;
+            dest_addr.sin_addr.s_addr = inet_addr(HOST_IP_ADDR);
+            dest_addr.sin_family = AF_INET;
+            dest_addr.sin_port = htons(PORT2);
+            addr_family = AF_INET;
+            ip_protocol = IPPROTO_IP;
 #elif defined(CONFIG_EXAMPLE_IPV6)
-        struct sockaddr_in6 dest_addr = {0};
-        inet6_aton(HOST_IP_ADDR, &dest_addr.sin6_addr);
-        dest_addr.sin6_family = AF_INET6;
-        dest_addr.sin6_port = htons(PORT2);
-        dest_addr.sin6_scope_id = esp_netif_get_netif_impl_index(EXAMPLE_INTERFACE);
-        addr_family = AF_INET6;
-        ip_protocol = IPPROTO_IPV6;
+            struct sockaddr_in6 dest_addr = {0};
+            inet6_aton(HOST_IP_ADDR, &dest_addr.sin6_addr);
+            dest_addr.sin6_family = AF_INET6;
+            dest_addr.sin6_port = htons(PORT2);
+            dest_addr.sin6_scope_id = esp_netif_get_netif_impl_index(EXAMPLE_INTERFACE);
+            addr_family = AF_INET6;
+            ip_protocol = IPPROTO_IPV6;
 #elif defined(CONFIG_EXAMPLE_SOCKET_IP_INPUT_STDIN)
-        struct sockaddr_in6 dest_addr = {0};
-        ESP_ERROR_CHECK(get_addr_from_stdin(PORT2, SOCK_DGRAM, &ip_protocol, &addr_family, &dest_addr));
+            struct sockaddr_in6 dest_addr = {0};
+            ESP_ERROR_CHECK(get_addr_from_stdin(PORT2, SOCK_DGRAM, &ip_protocol, &addr_family, &dest_addr));
 #endif
 
-        int sock = socket(addr_family, SOCK_DGRAM, ip_protocol);
-        if (sock < 0)
-        {
-            ESP_LOGE(TAG, "Unable to create socket: errno %d", errno);
-            break;
-        }
-        ESP_LOGI(TAG, "Socket created, sending to %s:%d", HOST_IP_ADDR, PORT2);
-
-        while (1)
-        {
-            if (udpTimer == 0)
+            int sock = socket(addr_family, SOCK_DGRAM, ip_protocol);
+            if (sock < 0)
             {
-                memset(data, 0, sizeof(data));
-                strcat(data, status);
-                strcat(data, ",");
-                strcat(data, myID);
-                strcat(data, ",");
-                strcat(data, deviceAge);
-                strcat(data, ",");
-                strcat(data, leaderHeartbeat);
-
-                payload = data;
-                // printf("payload is: %s", payload);
-                // printf("\n");
-
-                int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-                strcpy(deviceAge, "Old");
-                // printf(deviceAge);
-                // printf("\n");
-                if (err < 0)
-                {
-                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
-                    break;
-                }
-                ESP_LOGI(TAG, "Message sent");
-
-                struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
-                socklen_t socklen = sizeof(source_addr);
-
-                udpTimer = UDP_TIMER;
+                ESP_LOGE(TAG, "Unable to create socket: errno %d", errno);
+                break;
             }
-            // int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer) - 1, 0, (struct sockaddr *)&source_addr, &socklen);
+            ESP_LOGI(TAG, "Socket created, sending to %s:%d", HOST_IP_ADDR, PORT2);
 
-            // Error occurred during receiving
-            // if (len < 0) {
-            //     ESP_LOGE(TAG, "recvfrom failed: errno %d", errno);
-            //     break;
-            // }
-            // Data received
-            // else {
-            //     rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
-            //     ESP_LOGI(TAG, "Client received %d bytes from %s:", len, host_ip);
-            //     printf(rx_buffer);
-            //     printf("\n");
-            //     ESP_LOGI(TAG, "%s", rx_buffer);
-            //     if (strncmp(rx_buffer, "Ok!", 3) == 0) {
-            //         printf("EXECUTING---------------------");
-            //         ESP_LOGI(TAG, "Received expected message, reconnecting");
-            //         break;
-            //     }
-            // }
+            while (1)
+            {
+                if (udpTimer == 0)
+                {
+                    memset(data, 0, sizeof(data));
+                    strcat(data, status);
+                    strcat(data, ",");
+                    strcat(data, myID);
+                    strcat(data, ",");
+                    strcat(data, deviceAge);
+                    strcat(data, ",");
+                    strcat(data, leaderHeartbeat);
 
-            // vTaskDelay(2000 / portTICK_PERIOD_MS);
+                    payload = data;
+                    // printf("payload is: %s", payload);
+                    // printf("\n");
+
+                    int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+                    strcpy(deviceAge, "Old");
+                    // printf(deviceAge);
+                    // printf("\n");
+                    if (err < 0)
+                    {
+                        ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+                        break;
+                    }
+                    printf("sending to ip addess %s \n", HOST_IP_ADDR);
+                    ESP_LOGI(TAG, "Message sent");
+
+                    struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
+                    socklen_t socklen = sizeof(source_addr);
+
+                    udpTimer = UDP_TIMER;
+                }
+                // int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer) - 1, 0, (struct sockaddr *)&source_addr, &socklen);
+
+                // Error occurred during receiving
+                // if (len < 0) {
+                //     ESP_LOGE(TAG, "recvfrom failed: errno %d", errno);
+                //     break;
+                // }
+                // Data received
+                // else {
+                //     rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
+                //     ESP_LOGI(TAG, "Client received %d bytes from %s:", len, host_ip);
+                //     printf(rx_buffer);
+                //     printf("\n");
+                //     ESP_LOGI(TAG, "%s", rx_buffer);
+                //     if (strncmp(rx_buffer, "Ok!", 3) == 0) {
+                //         printf("EXECUTING---------------------");
+                //         ESP_LOGI(TAG, "Received expected message, reconnecting");
+                //         break;
+                //     }
+                // }
+
+                // vTaskDelay(2000 / portTICK_PERIOD_MS);
+            }
+
+            if (sock != -1)
+            {
+                ESP_LOGE(TAG, "Shutting down socket and restarting...");
+                shutdown(sock, 0);
+                close(sock);
+            }
         }
-
-        if (sock != -1)
-        {
-            ESP_LOGE(TAG, "Shutting down socket and restarting...");
-            shutdown(sock, 0);
-            close(sock);
-        }
+        vTaskDelete(NULL);
     }
-    vTaskDelete(NULL);
 }
 
 void app_main()
