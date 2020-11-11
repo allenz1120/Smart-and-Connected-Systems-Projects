@@ -54,6 +54,8 @@
 #include "sdkconfig.h"
 #include "freertos/event_groups.h"
 
+#define MAX 100
+
 // RMT definitions
 #define RMT_TX_CHANNEL 1                                 // RMT channel for transmitter
 #define RMT_TX_GPIO_NUM 25                               // GPIO number for transmitter signal -- A1
@@ -90,14 +92,17 @@ int sendFlag = 0;
 #define HEARTBEAT 1
 #define UDP_TIMER 3
 
+//Voter Variables
+char voterVote = 'B';
+char voterID = '0';
+int IRSentFlag = 0;
+
 int timeout = ELECTION_TIMEOUT;
 int udpTimer = UDP_TIMER;
 
 static const char *TAG = "example";
 
 static const char *payload = "";
-
-#define MAX 100
 
 typedef enum
 {
@@ -108,6 +113,7 @@ typedef enum
 
 char status[MAX] = "No_Leader";
 char myID[MAX] = "1";
+char myID_CHAR = '1';
 char deviceAge[MAX] = "New";
 char data[MAX];
 char leaderHeartbeat[MAX] = "Dead";
@@ -128,7 +134,7 @@ char IPtable[3][20] = {
 // Variables for my ID, minVal and status plus string fragments
 char start = 0x1B;
 char colorID = (char)ID;
-char myColor = (char)COLOR;
+char myColor = COLOR;
 int len_out = 4;
 
 // Mutex (for resources), and Queues (for button)
@@ -385,9 +391,10 @@ void recv_task()
         {
             char *data_out = (char *)malloc(len_out);
             xSemaphoreTake(mux, portMAX_DELAY);
+            // printf("myID is %c \n", myID[0]);
             data_out[0] = start;
-            data_out[1] = (char)myColor;
-            data_out[2] = (char)colorID;
+            data_out[1] = myColor;
+            data_out[2] = myID_CHAR;
             data_out[3] = genCheckSum(data_out, len_out - 1);
 
             // ESP_LOG_BUFFER_HEXDUMP(TAG_SYSTEM, data_out, len_out, ESP_LOG_INFO);
@@ -412,10 +419,22 @@ void recv_task()
                     {
 
                         ESP_LOG_BUFFER_HEXDUMP(TAG_SYSTEM, data_in, len_out, ESP_LOG_INFO);
-                        // change led data for current esp
-                        myColor = (char)data_in[1];
-                        colorID = (char)data_in[2];
-                        printf("data successfully recieved!\n");
+                        //NOTE: CHANGE MYCOLOR AND COLORID TO IRRECVCOLOR AND ID
+                        voterVote = (char)data_in[1];
+                        voterID = (char)data_in[2];
+                        if (voterVote == 'R')
+                        {
+                            gpio_set_level(REDPIN, 1);
+                            gpio_set_level(BLUEPIN, 0);
+                        }
+                        else if (voterVote == 'B')
+                        {
+                            gpio_set_level(REDPIN, 0);
+                            gpio_set_level(BLUEPIN, 1);
+                        }
+                        printf("ir data successfully recieved!\n");
+                        printf("and the voter is %c and they are voting for %c", voterID, voterVote);
+                        //TRIP GLOBAL IRRECV FLAG
 
                         // ********** recieved a vote here ******** //
                         // - communicate the vote to the poll leader through UDP
@@ -444,12 +463,14 @@ void led_task()
             // gpio_set_level(GREENPIN, 0);
             gpio_set_level(REDPIN, 1);
             gpio_set_level(BLUEPIN, 0);
+            myColor = 'R';
             // printf("Current state: %c\n",status);
             break;
         case 0: // Blue
             // gpio_set_level(GREENPIN, 0);
             gpio_set_level(REDPIN, 0);
             gpio_set_level(BLUEPIN, 1);
+            myColor = 'B';
             // printf("Current state: %c\n",status);
             break;
         }
@@ -501,7 +522,7 @@ static void timer_evt_task(void *arg)
             udpTimer--;
             if (timeout <= 0 && deviceState == ELECTION_STATE)
             {
-                // printf("GOING TO LEADER STATE\n");
+                printf("GOING TO LEADER STATE\n");
                 deviceState = LEADER_STATE; // Change to leader state (Last remaining device in election state)
             }
 
@@ -511,7 +532,7 @@ static void timer_evt_task(void *arg)
                 {
                     udpTimer = HEARTBEAT;
                 }
-                // printf("I AM THE LEADER!!!\n");
+                printf("I AM THE LEADER!!!\n");
                 strcpy(leaderHeartbeat, "Alive"); // Change leaderHeartbeat parameter in payload to "Alive" upon being elected leader
                 strcpy(status, "Leader");         // Change status to "Leader"
             }
@@ -729,7 +750,7 @@ char HOST_IP_ADDR[MAX] = "192.168.1.171";
 static void
 udp_client_task(void *pvParameters)
 {
-    char rx_buffer[128];
+    // char rx_buffer[128];
     // char host_ip[] = HOST_IP_ADDR;
     int addr_family = 0;
     int ip_protocol = 0;
@@ -782,8 +803,9 @@ udp_client_task(void *pvParameters)
                         printf("SAME IP ADDRESS =========================  \n");
                         continue;
                     }
-                    printf("COPYING THE IP TO HOST_IP and it is %s ========================= \n", IPtable[i]);
+                    // printf("COPYING THE IP TO HOST_IP and it is %s ========================= \n", IPtable[i]);
                     strcpy(HOST_IP_ADDR, IPtable[i]);
+                    printf("COPYING THE IP TO HOST_IP and it is %s ========================= \n", HOST_IP_ADDR);
                     // #if defined(CONFIG_EXAMPLE_IPV4)
                     dest_addr.sin_addr.s_addr = inet_addr(HOST_IP_ADDR);
 
@@ -799,9 +821,9 @@ udp_client_task(void *pvParameters)
                     payload = data;
                     // printf("payload is: %s", payload);
                     // printf("\n");
-                    printf("7\n");
+                    // printf("7\n");
                     int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-                    printf("8\n");
+                    // printf("8\n");
                     strcpy(deviceAge, "Old");
                     // printf(deviceAge);
                     // printf("\n");
@@ -813,8 +835,8 @@ udp_client_task(void *pvParameters)
                     printf("sending to ip addess %s \n", HOST_IP_ADDR);
                     ESP_LOGI(TAG, "Message sent");
 
-                    struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
-                    socklen_t socklen = sizeof(source_addr);
+                    // struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
+                    // socklen_t socklen = sizeof(source_addr);
 
                     udpTimer = UDP_TIMER;
                 }
