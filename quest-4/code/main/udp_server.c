@@ -78,7 +78,6 @@ int sendFlag = 0;
 #define GREENPIN 32
 #define REDPIN 15
 #define ONBOARD 13
-
 #define TIMER_DIVIDER 16                             //  Hardware timer clock divider
 #define TIMER_SCALE (TIMER_BASE_CLK / TIMER_DIVIDER) // to seconds
 #define TIMER_INTERVAL_2_SEC (2)
@@ -108,12 +107,19 @@ typedef enum
 } state_e;
 
 char status[MAX] = "No_Leader";
-char myID[MAX] = "2";
+char myID[MAX] = "1";
 char deviceAge[MAX] = "New";
 char data[MAX];
 char leaderHeartbeat[MAX] = "Dead";
 state_e deviceState = ELECTION_STATE;
 char transmitting[MAX] = "Yes";
+
+char IPtable[3][20] = {
+    "192.168.1.171",
+    "192.168.1.165",
+    "192.168.1.166"};
+
+#define NUM_FOBS 3
 
 // Default ID/color
 #define ID 1
@@ -495,7 +501,7 @@ static void timer_evt_task(void *arg)
             udpTimer--;
             if (timeout <= 0 && deviceState == ELECTION_STATE)
             {
-                printf("GOING TO LEADER STATE\n");
+                // printf("GOING TO LEADER STATE\n");
                 deviceState = LEADER_STATE; // Change to leader state (Last remaining device in election state)
             }
 
@@ -505,7 +511,7 @@ static void timer_evt_task(void *arg)
                 {
                     udpTimer = HEARTBEAT;
                 }
-                printf("I AM THE LEADER!!!\n");
+                // printf("I AM THE LEADER!!!\n");
                 strcpy(leaderHeartbeat, "Alive"); // Change leaderHeartbeat parameter in payload to "Alive" upon being elected leader
                 strcpy(status, "Leader");         // Change status to "Leader"
             }
@@ -717,38 +723,43 @@ static void udp_server_task(void *pvParameters)
 }
 
 //UDP client
-#define HOST_IP_ADDR "192.168.1.171"
+char HOST_IP_ADDR[MAX] = "192.168.1.171";
 #define PORT2 9002
 
-static void udp_client_task(void *pvParameters)
+static void
+udp_client_task(void *pvParameters)
 {
     char rx_buffer[128];
-    char host_ip[] = HOST_IP_ADDR;
+    // char host_ip[] = HOST_IP_ADDR;
     int addr_family = 0;
     int ip_protocol = 0;
 
     while (1)
     {
+        printf("-------------------------------- \n");
+        for (int i = 0; i < NUM_FOBS; i++)
+        {
+            printf("i is %d \n", i);
+        }
 
-#if defined(CONFIG_EXAMPLE_IPV4)
+        // #elif defined(CONFIG_EXAMPLE_IPV6)
+        //             struct sockaddr_in6 dest_addr = {0};
+        //             inet6_aton(HOST_IP_ADDR, &dest_addr.sin6_addr);
+        //             dest_addr.sin6_family = AF_INET6;
+        //             dest_addr.sin6_port = htons(PORT2);
+        //             dest_addr.sin6_scope_id = esp_netif_get_netif_impl_index(EXAMPLE_INTERFACE);
+        //             addr_family = AF_INET6;
+        //             ip_protocol = IPPROTO_IPV6;
+        // #elif defined(CONFIG_EXAMPLE_SOCKET_IP_INPUT_STDIN)
+        //             struct sockaddr_in6 dest_addr = {0};
+        //             ESP_ERROR_CHECK(get_addr_from_stdin(PORT2, SOCK_DGRAM, &ip_protocol, &addr_family, &dest_addr));
+        // #endif
         struct sockaddr_in dest_addr;
         dest_addr.sin_addr.s_addr = inet_addr(HOST_IP_ADDR);
         dest_addr.sin_family = AF_INET;
         dest_addr.sin_port = htons(PORT2);
         addr_family = AF_INET;
         ip_protocol = IPPROTO_IP;
-#elif defined(CONFIG_EXAMPLE_IPV6)
-        struct sockaddr_in6 dest_addr = {0};
-        inet6_aton(HOST_IP_ADDR, &dest_addr.sin6_addr);
-        dest_addr.sin6_family = AF_INET6;
-        dest_addr.sin6_port = htons(PORT2);
-        dest_addr.sin6_scope_id = esp_netif_get_netif_impl_index(EXAMPLE_INTERFACE);
-        addr_family = AF_INET6;
-        ip_protocol = IPPROTO_IPV6;
-#elif defined(CONFIG_EXAMPLE_SOCKET_IP_INPUT_STDIN)
-        struct sockaddr_in6 dest_addr = {0};
-        ESP_ERROR_CHECK(get_addr_from_stdin(PORT2, SOCK_DGRAM, &ip_protocol, &addr_family, &dest_addr));
-#endif
 
         int sock = socket(addr_family, SOCK_DGRAM, ip_protocol);
         if (sock < 0)
@@ -760,36 +771,53 @@ static void udp_client_task(void *pvParameters)
 
         while (1)
         {
+
             if (udpTimer == 0)
             {
-                memset(data, 0, sizeof(data));
-                strcat(data, status);
-                strcat(data, ",");
-                strcat(data, myID);
-                strcat(data, ",");
-                strcat(data, deviceAge);
-                strcat(data, ",");
-                strcat(data, leaderHeartbeat);
-
-                payload = data;
-                // printf("payload is: %s", payload);
-                // printf("\n");
-
-                int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-                strcpy(deviceAge, "Old");
-                // printf(deviceAge);
-                // printf("\n");
-                if (err < 0)
+                for (int i = 0; i < NUM_FOBS; i++)
                 {
-                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
-                    break;
+                    printf("HELLOOOOOOOOOOOOOOOOOOOOOOOOO \n");
+                    if (i == atoi(myID))
+                    {
+                        printf("SAME IP ADDRESS =========================  \n");
+                        continue;
+                    }
+                    printf("COPYING THE IP TO HOST_IP and it is %s ========================= \n", IPtable[i]);
+                    strcpy(HOST_IP_ADDR, IPtable[i]);
+                    // #if defined(CONFIG_EXAMPLE_IPV4)
+                    dest_addr.sin_addr.s_addr = inet_addr(HOST_IP_ADDR);
+
+                    memset(data, 0, sizeof(data));
+                    strcat(data, status);
+                    strcat(data, ",");
+                    strcat(data, myID);
+                    strcat(data, ",");
+                    strcat(data, deviceAge);
+                    strcat(data, ",");
+                    strcat(data, leaderHeartbeat);
+
+                    payload = data;
+                    // printf("payload is: %s", payload);
+                    // printf("\n");
+                    printf("7\n");
+                    int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+                    printf("8\n");
+                    strcpy(deviceAge, "Old");
+                    // printf(deviceAge);
+                    // printf("\n");
+                    if (err < 0)
+                    {
+                        ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+                        break;
+                    }
+                    printf("sending to ip addess %s \n", HOST_IP_ADDR);
+                    ESP_LOGI(TAG, "Message sent");
+
+                    struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
+                    socklen_t socklen = sizeof(source_addr);
+
+                    udpTimer = UDP_TIMER;
                 }
-                ESP_LOGI(TAG, "Message sent");
-
-                struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
-                socklen_t socklen = sizeof(source_addr);
-
-                udpTimer = UDP_TIMER;
             }
             // int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer) - 1, 0, (struct sockaddr *)&source_addr, &socklen);
 
@@ -821,8 +849,9 @@ static void udp_client_task(void *pvParameters)
             shutdown(sock, 0);
             close(sock);
         }
+
+        vTaskDelete(NULL);
     }
-    vTaskDelete(NULL);
 }
 
 void app_main()
