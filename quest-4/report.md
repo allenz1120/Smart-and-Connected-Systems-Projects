@@ -13,7 +13,9 @@ The purpose of this quest was to create a secure election process using both NFC
 
 | Objective Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
-| Objective One | 1 |  1     | 
+| Fob performs IR NFC data
+exchange of vote to another fob
+(LED indication) | 1 |  1     | 
 | Objective Two | 1 |  1     | 
 | Objective Three | 1 |  1     | 
 | Objective Four | 1 |  1     | 
