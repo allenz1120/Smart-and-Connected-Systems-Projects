@@ -260,39 +260,39 @@ async function DatabaseSend(){
       let result = await promise; // wait until the promise resolves (*)
      
 
-    if(id1 == 0){
+    if(id1 == 0 && payload[0] == 0){
       db.put(1, information1);
       id1 = 1;
     }
-    else if(id2 == 0){
+    else if(id2 == 0 && payload[0] == 1){
       db.put(2, information2);
       id2 = 1;
     }
-    else if(id3 == 0){
+    else if(id3 == 0 && payload[0] == 2){
       db.put(3, information3);
       id3 = 1;
     }
-    else if(id4 == 0){
+    else if(id4 == 0 && payload[0] == 3){
       db.put(4, information4);
       id4 = 1;
     }
-    else if(id5 == 0){
+    else if(id5 == 0 && payload[0] == 4){
       db.put(5, information5);
       id5 = 1;
     }
-    else if(id6 == 0){
+    else if(id6 == 0 && payload[0] == 5){
       db.put(6, information6);
       id6 = 1;
     }
-    else if(id7 == 0){
+    else if(id7 == 0 && payload[0] == 6){
       db.put(7, information7);
       id7 = 1;
     }
-    else if(id8 == 0){
+    else if(id8 == 0 && payload[0] == 7){
       db.put(8, information8);
       id8 = 1;
     }
-    else if(id9 == 0){
+    else if(id9 == 0 && payload[0] == 8){
       db.put(9, information9);
       id9 = 1;
     }
