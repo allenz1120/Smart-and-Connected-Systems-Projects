@@ -6,4 +6,6 @@ The fobs are all running the same code with the exception of their respective de
 [EXPLAIN LEADER ELECTION HERE]
 (Use Skill 28 code README)
 
-The majority of the election handling is done inside the UDP client and server tasks. The "udp_server_task" on line 553 uses a series of conditionals to handle incoming UDP packets depending on the current state of the fob. On line 649, a for loop deconstructs the received payload, determines if it contains leader election data or poll data, and stores its contents in related variables. 
+The majority of the election handling is done inside the UDP client and server tasks. The "udp_server_task" on line 553 uses a series of conditionals to handle state changing of the fob after receiving leader election data over UDP. On line 649, a for loop deconstructs the received payload, determines if it contains leader election data or poll data, and stores its contents in related variables. 
+
+In the "udp_client_task" on line 848 
