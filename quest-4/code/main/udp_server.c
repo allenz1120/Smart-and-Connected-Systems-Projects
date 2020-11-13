@@ -54,6 +54,8 @@
 #include "sdkconfig.h"
 #include "freertos/event_groups.h"
 
+#define MAX 100
+
 // RMT definitions
 #define RMT_TX_CHANNEL 1                                 // RMT channel for transmitter
 #define RMT_TX_GPIO_NUM 25                               // GPIO number for transmitter signal -- A1
@@ -90,14 +92,23 @@ int sendFlag = 0;
 #define HEARTBEAT 1
 #define UDP_TIMER 3
 
+//Voter Variables
+char voterVote = 'B';
+char voterVote_char[MAX] = "B";
+
+char voterID = '0';
+char voterID_char[MAX] = "0";
+
+int IRSentFlag = 0;
+int RecvFlag = 0;
+int UDPFlag = 0;
+
 int timeout = ELECTION_TIMEOUT;
 int udpTimer = UDP_TIMER;
 
 static const char *TAG = "example";
 
 static const char *payload = "";
-
-#define MAX 100
 
 typedef enum
 {
@@ -107,17 +118,19 @@ typedef enum
 } state_e;
 
 char status[MAX] = "No_Leader";
-char myID[MAX] = "1";
+char myID[MAX] = "0";
+char myID_CHAR = '0';
 char deviceAge[MAX] = "New";
 char data[MAX];
 char leaderHeartbeat[MAX] = "Dead";
-state_e deviceState = ELECTION_STATE;
+state_e deviceState = LEADER_STATE;
 char transmitting[MAX] = "Yes";
+char leaderIP[MAX] = "";
 
 char IPtable[3][20] = {
     "192.168.1.171",
     "192.168.1.165",
-    "192.168.1.166"};
+    "192.168.1.189"};
 
 #define NUM_FOBS 3
 
@@ -128,7 +141,7 @@ char IPtable[3][20] = {
 // Variables for my ID, minVal and status plus string fragments
 char start = 0x1B;
 char colorID = (char)ID;
-char myColor = (char)COLOR;
+char myColor = COLOR;
 int len_out = 4;
 
 // Mutex (for resources), and Queues (for button)
@@ -381,13 +394,14 @@ void recv_task()
     uint8_t *data_in = (uint8_t *)malloc(BUF_SIZE);
     while (1)
     {
-        if (sendFlag)
+        if (sendFlag && deviceState != LEADER_STATE)
         {
             char *data_out = (char *)malloc(len_out);
             xSemaphoreTake(mux, portMAX_DELAY);
+            // printf("myID is %c \n", myID[0]);
             data_out[0] = start;
-            data_out[1] = (char)myColor;
-            data_out[2] = (char)colorID;
+            data_out[1] = myColor;
+            data_out[2] = myID_CHAR;
             data_out[3] = genCheckSum(data_out, len_out - 1);
 
             // ESP_LOG_BUFFER_HEXDUMP(TAG_SYSTEM, data_out, len_out, ESP_LOG_INFO);
@@ -412,10 +426,23 @@ void recv_task()
                     {
 
                         ESP_LOG_BUFFER_HEXDUMP(TAG_SYSTEM, data_in, len_out, ESP_LOG_INFO);
-                        // change led data for current esp
-                        myColor = (char)data_in[1];
-                        colorID = (char)data_in[2];
-                        printf("data successfully recieved!\n");
+                        //NOTE: CHANGE MYCOLOR AND COLORID TO IRRECVCOLOR AND ID
+                        voterVote = (char)data_in[1];
+                        voterID = (char)data_in[2];
+                        if (voterVote == 'R')
+                        {
+                            gpio_set_level(REDPIN, 1);
+                            gpio_set_level(BLUEPIN, 0);
+                        }
+                        else if (voterVote == 'B')
+                        {
+                            gpio_set_level(REDPIN, 0);
+                            gpio_set_level(BLUEPIN, 1);
+                        }
+                        RecvFlag = 1;
+                        printf("ir data successfully recieved!\n");
+                        printf("and the voter is %c and they are voting for %c \n", voterID, voterVote);
+                        //TRIP GLOBAL IRRECV FLAG
 
                         // ********** recieved a vote here ******** //
                         // - communicate the vote to the poll leader through UDP
@@ -444,12 +471,14 @@ void led_task()
             // gpio_set_level(GREENPIN, 0);
             gpio_set_level(REDPIN, 1);
             gpio_set_level(BLUEPIN, 0);
+            myColor = 'R';
             // printf("Current state: %c\n",status);
             break;
         case 0: // Blue
             // gpio_set_level(GREENPIN, 0);
             gpio_set_level(REDPIN, 0);
             gpio_set_level(BLUEPIN, 1);
+            myColor = 'B';
             // printf("Current state: %c\n",status);
             break;
         }
@@ -501,17 +530,17 @@ static void timer_evt_task(void *arg)
             udpTimer--;
             if (timeout <= 0 && deviceState == ELECTION_STATE)
             {
-                // printf("GOING TO LEADER STATE\n");
+                printf("GOING TO LEADER STATE\n");
                 deviceState = LEADER_STATE; // Change to leader state (Last remaining device in election state)
             }
 
             if (deviceState == LEADER_STATE)
             {
-                if (udpTimer <= 0)
+                if (udpTimer < 0)
                 {
                     udpTimer = HEARTBEAT;
                 }
-                // printf("I AM THE LEADER!!!\n");
+                printf("I AM THE LEADER!!!\n");
                 strcpy(leaderHeartbeat, "Alive"); // Change leaderHeartbeat parameter in payload to "Alive" upon being elected leader
                 strcpy(status, "Leader");         // Change status to "Leader"
             }
@@ -580,6 +609,10 @@ static void udp_server_task(void *pvParameters)
             char recv_ID[MAX];
             char recv_deviceAge[MAX];
             char recv_leaderHeartbeat[MAX];
+            char tempBuffer[MAX];
+            // int counter=0;
+
+            int irMsgFlag = 0;
 
             ESP_LOGI(TAG, "Waiting for data");
             struct sockaddr_in6 source_addr; // Large enough for both IPv4 or IPv6
@@ -607,6 +640,8 @@ static void udp_server_task(void *pvParameters)
 
                 rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string...
 
+                
+                strcpy(tempBuffer,rx_buffer);
                 // Returns first token
                 char *token = strtok(rx_buffer, ",");
 
@@ -623,6 +658,10 @@ static void udp_server_task(void *pvParameters)
                     }
                     else if (i == 1)
                     {
+                        if (strcmp(token,"R") == 0 || strcmp(token,"B") == 0){
+                            irMsgFlag = 1;
+                            break;
+                        }
                         strcpy(recv_ID, token);
                         // printf("token at i=1: %s", token);
                         // printf("\n");
@@ -641,6 +680,81 @@ static void udp_server_task(void *pvParameters)
                     }
 
                     token = strtok(NULL, ",");
+                }
+                
+                printf("TEMPBUFFER is %s \n",tempBuffer);
+                char *token2 = strtok(tempBuffer, ",");
+                printf("token2 successfully created \n");
+
+                if (irMsgFlag == 1) {
+                    while( token2 != NULL ) {
+                        printf( " %s\n", token2 );
+                        // if (counter == 0){
+                        //     voterID_char = token2;
+                        //     counter++;
+                        // }
+                        // else if (counter == 1){
+                        //     voterVote_char = token2;
+                        //     counter=0;
+                        // }
+                        if (strcmp(token2, "B") == 0){
+                            voterVote = 66;
+                        }
+                        else if (strcmp(token2, "R") == 0){
+                            voterVote = 82;
+                        }
+                        else if (strcmp(token2, "0") == 0){
+                            voterID = 48;
+                        }
+                        else if (strcmp(token2, "1") == 0){
+                            voterID = 49;
+                        }
+                        else if (strcmp(token2, "2") == 0){
+                            voterID = 50;
+                        }
+                        else if (strcmp(token2, "3") == 0){
+                            voterID = 51;
+                        }
+                        else if (strcmp(token2, "4") == 0){
+                            voterID = 52;
+                        }
+                        else if (strcmp(token2, "5") == 0){
+                            voterID = 53;
+                        }
+                        else if (strcmp(token2, "6") == 0){
+                            voterID = 54;
+                        }
+                        else if (strcmp(token2, "7") == 0){
+                            voterID = 55;
+                        }
+                        else if (strcmp(token2, "8") == 0){
+                            voterID = 56;
+                        }
+                        else if (strcmp(token2, "9") == 0){
+                            voterID = 56;
+                        }
+                        
+
+                        token2 = strtok(NULL, ",");
+                    }
+                    // for (int i = 0; i < 2; i++) {
+
+                    //     printf("Loop #%d", i);
+                    //     printf("\n");
+
+                    //     printf("Token2 is %s", token2);
+                    //     printf("\n");
+
+                    //     if (i == 0) {
+                    //         strcpy(voterID, token2);
+                    //     } else if (i == 1) {
+                    //         strcpy(voterVote, token2);
+                    //     }
+                    //     token2 = strtok(NULL, ",");
+                    // }
+                    printf("================ voterID is %d \n", voterID);
+                    printf("================ voterVote is %d \n", voterVote);
+                    RecvFlag = 1;
                 }
                 // printf("recv_status is %s\n, recv_ID is %s\n, reccv_deviceAge is %s\n, recv_leaderHeartbeat is %s \n", recv_status, recv_ID, recv_deviceAge, recv_leaderHeartbeat);
 
@@ -681,6 +795,9 @@ static void udp_server_task(void *pvParameters)
                     {
                         timeout = LEADER_TIMEOUT; // Reset leader timeout upon receiving leader heartbeat
                         strcpy(status, "Leader"); // Update status to leader upon receiving leader heartbeat
+                        printf("leaderIP is originally %s \n", leaderIP);
+                        strcpy(leaderIP, IPtable[recv_ID_num]);
+                        printf("leaderIP is now changed to %s with the recv_ID_num of %d \n", leaderIP, recv_ID_num);
                     }
                     else if (timeout <= 0)
                     {
@@ -724,23 +841,24 @@ static void udp_server_task(void *pvParameters)
 
 //UDP client
 char HOST_IP_ADDR[MAX] = "192.168.1.171";
+#define NODE_IP_ADDR "192.168.1.186"
 #define PORT2 9002
 
 static void
 udp_client_task(void *pvParameters)
 {
-    char rx_buffer[128];
+    // char rx_buffer[128];
     // char host_ip[] = HOST_IP_ADDR;
     int addr_family = 0;
     int ip_protocol = 0;
 
     while (1)
     {
-        printf("-------------------------------- \n");
-        for (int i = 0; i < NUM_FOBS; i++)
-        {
-            printf("i is %d \n", i);
-        }
+        // printf("-------------------------------- \n");
+        // for (int i = 0; i < NUM_FOBS; i++)
+        // {
+        //     printf("i is %d \n", i);
+        // }
 
         // #elif defined(CONFIG_EXAMPLE_IPV6)
         //             struct sockaddr_in6 dest_addr = {0};
@@ -771,19 +889,19 @@ udp_client_task(void *pvParameters)
 
         while (1)
         {
-
-            if (udpTimer == 0)
+            if (udpTimer <= 0)
             {
                 for (int i = 0; i < NUM_FOBS; i++)
                 {
-                    printf("HELLOOOOOOOOOOOOOOOOOOOOOOOOO \n");
+                    // printf("HELLOOOOOOOOOOOOOOOOOOOOOOOOO \n");
                     if (i == atoi(myID))
                     {
-                        printf("SAME IP ADDRESS =========================  \n");
+                        // printf("SAME IP ADDRESS =========================  \n");
                         continue;
                     }
-                    printf("COPYING THE IP TO HOST_IP and it is %s ========================= \n", IPtable[i]);
+                    // printf("COPYING THE IP TO HOST_IP and it is %s ========================= \n", IPtable[i]);
                     strcpy(HOST_IP_ADDR, IPtable[i]);
+                    printf("COPYING THE IP TO HOST_IP and it is %s ========================= \n", HOST_IP_ADDR);
                     // #if defined(CONFIG_EXAMPLE_IPV4)
                     dest_addr.sin_addr.s_addr = inet_addr(HOST_IP_ADDR);
 
@@ -799,9 +917,9 @@ udp_client_task(void *pvParameters)
                     payload = data;
                     // printf("payload is: %s", payload);
                     // printf("\n");
-                    printf("7\n");
+                    // printf("7\n");
                     int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-                    printf("8\n");
+                    // printf("8\n");
                     strcpy(deviceAge, "Old");
                     // printf(deviceAge);
                     // printf("\n");
@@ -813,12 +931,233 @@ udp_client_task(void *pvParameters)
                     printf("sending to ip addess %s \n", HOST_IP_ADDR);
                     ESP_LOGI(TAG, "Message sent");
 
-                    struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
-                    socklen_t socklen = sizeof(source_addr);
+                    // struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
+                    // socklen_t socklen = sizeof(source_addr);
 
                     udpTimer = UDP_TIMER;
                 }
             }
+            if (RecvFlag == 1 && deviceState == LEADER_STATE)
+            {
+                dest_addr.sin_addr.s_addr = inet_addr(NODE_IP_ADDR);
+
+                printf("SENDING TO NODE SERVER \n");
+
+                printf("voterVote inside udp_client is %d ", voterVote);
+                printf("\n");
+
+                printf("voterID inside udp_client is %d ", voterID);
+                printf("\n");
+
+                if (voterVote == 66) {
+                    strcpy(voterVote_char, "B");
+                }
+                else if (voterVote == 82) {
+                    strcpy(voterVote_char, "R");
+                }
+                
+                switch (voterID) {
+                    case 48:
+                        strcpy(voterID_char, "0");
+                        break;
+                    case 49:
+                        strcpy(voterID_char, "1");
+                        break;
+                    case 50:
+                        strcpy(voterID_char, "2");
+                        break;
+                    case 51:
+                        strcpy(voterID_char, "3");
+                        break;
+                    case 52:
+                        strcpy(voterID_char, "4");
+                        break;
+                    case 53:
+                        strcpy(voterID_char, "5");
+                        break;
+                    case 54:
+                        strcpy(voterID_char, "6");
+                        break;
+                    case 55:
+                        strcpy(voterID_char, "7");
+                        break;
+                    case 56:
+                        strcpy(voterID_char, "8");
+                        break;
+                    case 57:
+                        strcpy(voterID_char, "9");
+                        break;
+                }
+                
+                printf("voterID_char is %s \n", voterID_char);
+                printf("voterVote_char is %s \n", voterVote_char);
+
+                memset(data, 0, sizeof(data));
+                strcat(data, voterID_char);
+                strcat(data, ",");
+                strcat(data, voterVote_char);
+
+                payload = data;
+                // printf("payload is: %s", payload);
+                // printf("\n");
+                // printf("7\n");
+                int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+                // printf("8\n");
+                strcpy(deviceAge, "Old");
+                // printf(deviceAge);
+                // printf("\n");
+                if (err < 0)
+                {
+                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+                    break;
+                }
+                printf("sending to ip addess %s \n", HOST_IP_ADDR);
+                ESP_LOGI(TAG, "Message sent");
+
+                // struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
+                // socklen_t socklen = sizeof(source_addr);
+                RecvFlag = 0;
+            } else if (RecvFlag == 1 && deviceState != LEADER_STATE) {
+                dest_addr.sin_addr.s_addr = inet_addr(leaderIP);
+
+                printf("SENDING TO POLL LEADER \n");
+
+                if (voterVote == 66) {
+                    strcpy(voterVote_char, "B");
+                }
+                else if (voterVote == 82) {
+                    strcpy(voterVote_char, "R");
+                }
+                
+                switch (voterID) {
+                    case 48:
+                        strcpy(voterID_char, "0");
+                        break;
+                    case 49:
+                        strcpy(voterID_char, "1");
+                        break;
+                    case 50:
+                        strcpy(voterID_char, "2");
+                        break;
+                    case 51:
+                        strcpy(voterID_char, "3");
+                        break;
+                    case 52:
+                        strcpy(voterID_char, "4");
+                        break;
+                    case 53:
+                        strcpy(voterID_char, "5");
+                        break;
+                    case 54:
+                        strcpy(voterID_char, "6");
+                        break;
+                    case 55:
+                        strcpy(voterID_char, "7");
+                        break;
+                    case 56:
+                        strcpy(voterID_char, "8");
+                        break;
+                    case 57:
+                        strcpy(voterID_char, "9");
+                        break;
+                }
+
+                memset(data, 0, sizeof(data));
+                strcat(data, voterID_char);
+                strcat(data, ",");
+                strcat(data, voterVote_char);
+
+                payload = data;
+                // printf("payload is: %s", payload);
+                // printf("\n");
+                // printf("7\n");
+                int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+                // printf("8\n");
+                strcpy(deviceAge, "Old");
+                // printf(deviceAge);
+                // printf("\n");
+                if (err < 0)
+                {
+                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+                    break;
+                }
+                printf("sending to ip address %s \n", leaderIP);
+                ESP_LOGI(TAG, "Message sent");
+
+                // struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
+                // socklen_t socklen = sizeof(source_addr);
+                RecvFlag = 0;
+            } else if (sendFlag == 1 && deviceState == LEADER_STATE) {
+                dest_addr.sin_addr.s_addr = inet_addr(NODE_IP_ADDR);
+
+                printf("SENDING TO NODE SERVER \n");
+
+                if (myColor == 66) {
+                    strcpy(voterVote_char, "B");
+                }
+                else if (myColor == 82) {
+                    strcpy(voterVote_char, "R");
+                }
+                
+                switch (myID_CHAR) {
+                    case 48:
+                        strcpy(voterID_char, "0");
+                        break;
+                    case 49:
+                        strcpy(voterID_char, "1");
+                        break;
+                    case 50:
+                        strcpy(voterID_char, "2");
+                        break;
+                    case 51:
+                        strcpy(voterID_char, "3");
+                        break;
+                    case 52:
+                        strcpy(voterID_char, "4");
+                        break;
+                    case 53:
+                        strcpy(voterID_char, "5");
+                        break;
+                    case 54:
+                        strcpy(voterID_char, "6");
+                        break;
+                    case 55:
+                        strcpy(voterID_char, "7");
+                        break;
+                    case 56:
+                        strcpy(voterID_char, "8");
+                        break;
+                    case 57:
+                        strcpy(voterID_char, "9");
+                        break;
+                }
+
+                memset(data, 0, sizeof(data));
+                strcat(data, voterID_char);
+                strcat(data, ",");
+                strcat(data, voterVote_char);
+
+                payload = data;
+                // printf("payload is: %s", payload);
+                // printf("\n");
+                // printf("7\n");
+                int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+                // printf("8\n");
+                strcpy(deviceAge, "Old");
+                // printf(deviceAge);
+                // printf("\n");
+                if (err < 0)
+                {
+                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+                    break;
+                }
+                printf("sending to ip addess %s \n", HOST_IP_ADDR);
+                ESP_LOGI(TAG, "Message sent");
+
+                // struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
+                // socklen_t socklen = sizeof(source_addr);
+                sendFlag = 0;
+            } 
             // int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer) - 1, 0, (struct sockaddr *)&source_addr, &socklen);
 
             // Error occurred during receiving
@@ -840,7 +1179,7 @@ udp_client_task(void *pvParameters)
             //     }
             // }
 
-            // vTaskDelay(2000 / portTICK_PERIOD_MS);
+            vTaskDelay(100 / portTICK_PERIOD_MS);
         }
 
         if (sock != -1)
