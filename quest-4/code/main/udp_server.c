@@ -101,7 +101,6 @@ char voterID_char[MAX] = "0";
 
 int IRSentFlag = 0;
 int RecvFlag = 0;
-int UDPFlag = 0;
 
 int timeout = ELECTION_TIMEOUT;
 int udpTimer = UDP_TIMER;
@@ -682,9 +681,9 @@ static void udp_server_task(void *pvParameters)
                     token = strtok(NULL, ",");
                 }
                 
-                printf("TEMPBUFFER is %s \n",tempBuffer);
+                // printf("TEMPBUFFER is %s \n",tempBuffer);
                 char *token2 = strtok(tempBuffer, ",");
-                printf("token2 successfully created \n");
+                // printf("token2 successfully created \n");
 
                 if (irMsgFlag == 1) {
                     while( token2 != NULL ) {
@@ -755,6 +754,7 @@ static void udp_server_task(void *pvParameters)
                     printf("================ voterID is %d \n", voterID);
                     printf("================ voterVote is %d \n", voterVote);
                     RecvFlag = 1;
+                    irMsgFlag = 0;
                 }
                 // printf("recv_status is %s\n, recv_ID is %s\n, reccv_deviceAge is %s\n, recv_leaderHeartbeat is %s \n", recv_status, recv_ID, recv_deviceAge, recv_leaderHeartbeat);
 
