@@ -76,8 +76,8 @@ Any additional information about communication via sockets between node and the 
 ![db_img](https://user-images.githubusercontent.com/50682462/99131150-6017b300-25e0-11eb-99c1-9f9945f7d4ea.PNG)
 
 
-## Supporting Artifacts
-- [Link to video demo](). Not to exceed 120s
+## Video Demo
+- Link: 
 
 
 ## Modules, Tools, Source Used Including Attribution
