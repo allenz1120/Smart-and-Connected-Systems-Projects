@@ -1,4 +1,4 @@
-// Alex Prior
+// Alex Prior, John Kircher, Allen Zou
 // 10/29/2020
 
 /* Infrared IR/UART beacons for crawler capture the flag!
