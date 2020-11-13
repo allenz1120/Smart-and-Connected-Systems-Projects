@@ -63,6 +63,7 @@ Any additional information about communication via sockets between node and the 
 <center><img src="./images/voting-arch.jpg" width="25%" /></center>  
 <center> </center>
 
+-- RaspberryPi Node Console, displaying received information from c program:
 ![image1](https://user-images.githubusercontent.com/50682462/99131133-58580e80-25e0-11eb-844a-e740112aeec6.png)
 
 ![image2](https://user-images.githubusercontent.com/50682462/99131140-5a21d200-25e0-11eb-90dd-42adcbbd6232.png)
