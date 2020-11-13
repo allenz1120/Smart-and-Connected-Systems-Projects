@@ -3,11 +3,11 @@
 ### Fob Code
 The fobs are all running the same code with the exception of their respective device IDs, which are unique and can be found on lines 121 and 122. Each fob also makes use of a global ipTable variable, found on line 130, that maps device IDs to their respective IP addresses (The indices correspond with the device ID). We also define a NUM_FOBS constant on line 135 for looping through the device IPs. Due to limited hardware, we used 3 fobs for this demo. 
 
-# Code Readme
+###  Leader Election Section -------------------------------------------------------------------------------------------
 
 This program was created by combining the udp_client and udp_server code examples and our skill 25 code. 
 
-# State Diagram
+### State Diagram
 The program revolves around three states: ELECTION_STATE, LEADER_STATE, FOLLOWER_STATE (lines 113 - 118). All FOBs enter the election in the ELECTION_STATE and it represents FOBs that are still in contension for becoming the Leader. A FOB is moved to the FOLLOWER_STATE if it realizes that it's ID is higher than the FOBs that is is communicating to which means that it is now out of the race. Lastly, once the election times out, a FOB moves from election to the LEADER_STATE which signifies that it is the declared leader.
 
 ### Timers and Timeouts
@@ -25,6 +25,7 @@ In the LEADER_STATE, the FOB disregards the general timeout varibale and only us
 ### UDP Payload
 Each FOB sends a UDP message when the UDP timer arrives at zero, and it contains information about the status, myID, deviceAge, and leaderHeartbeat (lines 912 - 960). It is then parsed at the receiving server using strtok and delimiting using "," (lines 651 - 689). 
 
+###  Leader Election Section -------------------------------------------------------------------------------------------
 
 The majority of the election handling is done inside the UDP client and server tasks. The "udp_server_task" on line 560 uses a series of conditionals to handle state changing of the fob after receiving leader election data over UDP. On line 655, a for loop deconstructs the received payload, determines if it contains leader election data or poll data, and stores its contents in related variables. 
 
