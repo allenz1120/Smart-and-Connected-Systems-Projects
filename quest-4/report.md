@@ -52,7 +52,8 @@ More information about how this was implemented in the code can be found in the 
 
 
 ## Sketches and Photos
-<center><img src="./images/ece444.png" width="25%" /></center>  
+<center><img src="./images/e-vote-fsm.png" width="25%" /></center>  
+<center><img src="./images/voting-arch.jpg" width="25%" /></center>  
 <center> </center>
 
 
