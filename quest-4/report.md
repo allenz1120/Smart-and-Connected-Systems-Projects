@@ -60,9 +60,10 @@ Any additional information about communication via sockets between node and the 
 
 ## Sketches and Photos
 
-# RaspberryPi Node Console, displaying received information from c program:
+### RaspberryPi Node Console, displaying received information from c program:
 ![image1](https://user-images.githubusercontent.com/50682462/99131133-58580e80-25e0-11eb-844a-e740112aeec6.png)
 
+### Web Client displaying voting data:
 ![image2](https://user-images.githubusercontent.com/50682462/99131140-5a21d200-25e0-11eb-90dd-42adcbbd6232.png)
 
 ![image3](https://user-images.githubusercontent.com/50682462/99131142-5b52ff00-25e0-11eb-9b0b-206afc4cca15.png)
@@ -71,8 +72,9 @@ Any additional information about communication via sockets between node and the 
 
 ![image5](https://user-images.githubusercontent.com/50682462/99131146-5db55900-25e0-11eb-9372-4b8d8e9fea8b.jpeg)
 
+### Implementation of database in our code (db.js):
 ![db_img](https://user-images.githubusercontent.com/50682462/99131150-6017b300-25e0-11eb-99c1-9f9945f7d4ea.PNG)
-Implementation of database in our code (db.js):
+
 
 ## Supporting Artifacts
 - [Link to video demo](). Not to exceed 120s
