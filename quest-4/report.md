@@ -63,6 +63,18 @@ Any additional information about communication via sockets between node and the 
 <center><img src="./images/voting-arch.jpg" width="25%" /></center>  
 <center> </center>
 
+![image1](https://user-images.githubusercontent.com/50682462/99131133-58580e80-25e0-11eb-844a-e740112aeec6.png)
+
+![image2](https://user-images.githubusercontent.com/50682462/99131140-5a21d200-25e0-11eb-90dd-42adcbbd6232.png)
+
+![image3](https://user-images.githubusercontent.com/50682462/99131142-5b52ff00-25e0-11eb-9b0b-206afc4cca15.png)
+
+![image4](https://user-images.githubusercontent.com/50682462/99131145-5c842c00-25e0-11eb-99cf-0476b86f2ad4.jpeg)
+
+![image5](https://user-images.githubusercontent.com/50682462/99131146-5db55900-25e0-11eb-9372-4b8d8e9fea8b.jpeg)
+
+![db_img](https://user-images.githubusercontent.com/50682462/99131150-6017b300-25e0-11eb-99c1-9f9945f7d4ea.PNG)
+
 
 ## Supporting Artifacts
 - [Link to video demo](). Not to exceed 120s
