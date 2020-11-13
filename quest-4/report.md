@@ -13,13 +13,13 @@ The purpose of this quest was to create a secure election process using both NFC
 
 | Objective Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
-| Objective One | 1 |  1     | 
-| Objective Two | 1 |  1     | 
-| Objective Three | 1 |  1     | 
-| Objective Four | 1 |  1     | 
-| Objective Five | 1 |  1     | 
-| Objective Six | 1 |  1     | 
-| Objective Seven | 1 |  1     | 
+| Fob performs IR NFC data exchange of vote to another fob (LED indication) | 1 |  1     | 
+| Receiving fob communicates vote to Poll Leader (LED indication) via network communication | 1 |  1     | 
+| Poll leader (LED indication) is replaced if fails | 1 |  1     | 
+| Poll Leader reports votes to server database. | 1 |  1     | 
+| Portal allows query to database to show actual vote counts per candidate | 1 |  1     | 
+| Operates over mutiple sites or with all available fobs (up to 9) | 1 |  1     | 
+| Investigative question response | 1 |  1     | 
 
 
 ### Qualitative Criteria
