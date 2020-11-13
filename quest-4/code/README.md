@@ -1,14 +1,20 @@
 # Code Readme
 
 ### Fob Code
-The fobs are all running the same code with the exception of their respective device IDs, which are unique and can be found on lines 120 and 121. Each fob also makes use of a global ipTable variable, found on line 129, that maps device IDs to their respective IP addresses (The indices correspond with the device ID). We also define a NUM_FOBS constant on line 134 for looping through the device IPs. Due to limited hardware, we used 3 fobs for this demo. 
+The fobs are all running the same code with the exception of their respective device IDs, which are unique and can be found on lines 121 and 122. Each fob also makes use of a global ipTable variable, found on line 130, that maps device IDs to their respective IP addresses (The indices correspond with the device ID). We also define a NUM_FOBS constant on line 135 for looping through the device IPs. Due to limited hardware, we used 3 fobs for this demo. 
 
 [EXPLAIN LEADER ELECTION HERE]
 (Use Skill 28 code README)
 
-The majority of the election handling is done inside the UDP client and server tasks. The "udp_server_task" on line 553 uses a series of conditionals to handle state changing of the fob after receiving leader election data over UDP. On line 649, a for loop deconstructs the received payload, determines if it contains leader election data or poll data, and stores its contents in related variables. 
+The majority of the election handling is done inside the UDP client and server tasks. The "udp_server_task" on line 560 uses a series of conditionals to handle state changing of the fob after receiving leader election data over UDP. On line 655, a for loop deconstructs the received payload, determines if it contains leader election data or poll data, and stores its contents in related variables. 
 
-In the "udp_client_task" on line 848 
+Once a poll leader has been elected, the actual voting process can begin. The fobs toggle between voting red or blue inside button_task() on line 346. Pressing the button changes the colorID variable, which is then checked with a switch case inside led_task() on line 464. This LED task checks the state of the colorID variable, and will turn on the appropriate red or blue LED on the fob.
+
+After choosing to vote red or blue, a second button is pressed to transmit the fob ID and it's vote ('R' or 'B') over NFC/IR to an adjacent fob. The second button trips a flag (sendFlag) inside of button_2_task() on line 373. Conceptually, we chose to only transmit voter data over NFC/IR if the fob is not in a leader state. We chose to do this because we felt that the poll leader should have the ability to transmit its vote directly to the node.js server over UDP, rather than having to transmit to an adjacent fob, receive its own vote back, and only then being able to transmit to the node.js server. 
+
+So, if the fob is not in a leader state (Is not the poll leader), and the sendFlag is tripped, it will enter a conditional inside the recv_task() on line 397. The code inside this conditional will then transmit the fob ID and vote to an adjacent fob over NFC/IR. The adjacent fob will then have the RecvFlag tripped on line 442 upon receiving the IR data. If the adjacent fob is not the poll leader, a conditional will then execute inside the udp_client_task() on line 1045, which handles sending the original fob's ID and vote to the poll leader over UDP. If the adjacent fob happens to be the poll leader already, a conditional inside the udp_client_task() on line 961 will instead execute, sending the original fob's ID and vote directly to the node.js server over UDP.
+
+If the poll leader is sending its own vote, the conditional on line 1120 will execute, which sends its own fob ID and vote directly to the node.js server over UDP.
 
 
 ### Votes.js Code
