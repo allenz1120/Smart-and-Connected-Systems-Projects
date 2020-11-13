@@ -1,8 +1,4 @@
 # Code Readme
 
-Please describe what is in your code folder and subfolders. Make it
-easy for us to navigate this space.
-
-Also
-- Please provide your name and date in any code submitted
-- Indicate attributrion for any code you have adopted from elsewhere
+### Fob Code
+The fobs are all running the same code with the exception of their respective device IDs, which are unique and can be found on lines 121 and 122. Each fob also makes use of a global ipTable variable, found on line 130, that maps device IDs to their respective IP addresses 
