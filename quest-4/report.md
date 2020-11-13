@@ -26,10 +26,10 @@ The purpose of this quest was to create a secure election process using both NFC
 
 | Qualitative Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
-| Quality of solution |  |  5     | 
-| Quality of report.md including use of graphics |  |  3     | 
-| Quality of code reporting |  |  3     | 
-| Quality of video presentation |  |  3     | 
+| Quality of solution | 5 |  5     | 
+| Quality of report.md including use of graphics | 3 |  3     | 
+| Quality of code reporting | 3 |  3     | 
+| Quality of video presentation | 3 |  3     | 
 
 
 ## Solution Design
@@ -48,8 +48,15 @@ Lastly, the poll leader itself is able to vote by directly sending its data to t
 More information about how this was implemented in the code can be found in the code README inside the code folder.
 
 ### Node.js Server and Database
-(Insert docs here)
+We chose to use levelDB as our database as we found the implementation with a node program was the easiest. LevelDB allowed us to easily create a new directory which we call 'mydb' to store a fob's time, id, and vote. For the node program we decided to use sockets.io for event based communication to the web client. 
 
+The first step in the node program was to receive the message from the c program and neatly organize the fob's id and vote. We do this by creating 9 unqiue fob objects which store unique id's, votes, and time. After this data is stored we populate the levelDB database with the current vote received and then we stop that fob from communicating with a conditional as we would not want one person to vote twice. Finally, the node program then gets the information right back from the database and pushes it to the web client for real-time display. This process is replicated for an 'up to 9 fob implementation.' 
+
+Additionally, each time there is a new election, the previous election data from every fob is cleared. We do this because we don't want to be counting old votes when we get information from the database. (i.e, you wanted one one vote to count as two or three).
+
+The front-end web client set-up is very simple. We decided to store all fob information into tables diplaying time, id, and vote. Everytime data is sent to the front-end we check which fob sent it and populate that table with the data. Futhermore, we increment a blueVotes and redVote counter based on the vote from that fob. This allowed us to implement a button 'countVotes' that will display each party's votes. 
+
+Any additional information about communication via sockets between node and the front end can be found in the code folder README. 
 
 ## Sketches and Photos
 <center><img src="./images/e-vote-fsm.png" width="25%" /></center>  
