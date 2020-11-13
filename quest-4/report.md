@@ -74,7 +74,7 @@ Any additional information about communication via sockets between node and the 
 ![image5](https://user-images.githubusercontent.com/50682462/99131146-5db55900-25e0-11eb-9372-4b8d8e9fea8b.jpeg)
 
 ![db_img](https://user-images.githubusercontent.com/50682462/99131150-6017b300-25e0-11eb-99c1-9f9945f7d4ea.PNG)
-
+Implementation of database in our code (db.js):
 
 ## Supporting Artifacts
 - [Link to video demo](). Not to exceed 120s
