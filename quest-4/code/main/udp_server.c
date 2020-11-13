@@ -87,10 +87,10 @@ int sendFlag = 0;
 #define TEST_WITH_RELOAD 1 // Testing will be done with auto reload
 
 //Timer Variables
-#define ELECTION_TIMEOUT 6
-#define LEADER_TIMEOUT 50
+#define ELECTION_TIMEOUT 3
+#define LEADER_TIMEOUT 6
 #define HEARTBEAT 1
-#define UDP_TIMER 3
+#define UDP_TIMER 1
 
 //Voter Variables
 char voterVote = 'B';
@@ -101,6 +101,7 @@ char voterID_char[MAX] = "0";
 
 int IRSentFlag = 0;
 int RecvFlag = 0;
+int UDPFlag = 0;
 
 int timeout = ELECTION_TIMEOUT;
 int udpTimer = UDP_TIMER;
@@ -117,12 +118,12 @@ typedef enum
 } state_e;
 
 char status[MAX] = "No_Leader";
-char myID[MAX] = "0";
-char myID_CHAR = '0';
+char myID[MAX] = "1";
+char myID_CHAR = '1';
 char deviceAge[MAX] = "New";
 char data[MAX];
 char leaderHeartbeat[MAX] = "Dead";
-state_e deviceState = LEADER_STATE;
+state_e deviceState = ELECTION_STATE;
 char transmitting[MAX] = "Yes";
 char leaderIP[MAX] = "";
 
@@ -533,13 +534,19 @@ static void timer_evt_task(void *arg)
                 deviceState = LEADER_STATE; // Change to leader state (Last remaining device in election state)
             }
 
+            if (timeout <= 0 && deviceState == FOLLOWER_STATE)
+            {
+                deviceState = ELECTION_STATE; // Change to election state
+                timeout = ELECTION_TIMEOUT;   // Change timeout variable to election timeout constant
+            }
+
             if (deviceState == LEADER_STATE)
             {
                 if (udpTimer < 0)
                 {
                     udpTimer = HEARTBEAT;
                 }
-                printf("I AM THE LEADER!!!\n");
+                printf("I AM THE LEADER!!! with timeout %d\n", timeout);
                 strcpy(leaderHeartbeat, "Alive"); // Change leaderHeartbeat parameter in payload to "Alive" upon being elected leader
                 strcpy(status, "Leader");         // Change status to "Leader"
             }
@@ -639,8 +646,7 @@ static void udp_server_task(void *pvParameters)
 
                 rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string...
 
-                
-                strcpy(tempBuffer,rx_buffer);
+                strcpy(tempBuffer, rx_buffer);
                 // Returns first token
                 char *token = strtok(rx_buffer, ",");
 
@@ -657,7 +663,8 @@ static void udp_server_task(void *pvParameters)
                     }
                     else if (i == 1)
                     {
-                        if (strcmp(token,"R") == 0 || strcmp(token,"B") == 0){
+                        if (strcmp(token, "R") == 0 || strcmp(token, "B") == 0)
+                        {
                             irMsgFlag = 1;
                             break;
                         }
@@ -680,14 +687,16 @@ static void udp_server_task(void *pvParameters)
 
                     token = strtok(NULL, ",");
                 }
-                
-                // printf("TEMPBUFFER is %s \n",tempBuffer);
-                char *token2 = strtok(tempBuffer, ",");
-                // printf("token2 successfully created \n");
 
-                if (irMsgFlag == 1) {
-                    while( token2 != NULL ) {
-                        printf( " %s\n", token2 );
+                printf("TEMPBUFFER is %s \n", tempBuffer);
+                char *token2 = strtok(tempBuffer, ",");
+                printf("token2 successfully created \n");
+
+                if (irMsgFlag == 1)
+                {
+                    while (token2 != NULL)
+                    {
+                        printf(" %s\n", token2);
                         // if (counter == 0){
                         //     voterID_char = token2;
                         //     counter++;
@@ -696,43 +705,54 @@ static void udp_server_task(void *pvParameters)
                         //     voterVote_char = token2;
                         //     counter=0;
                         // }
-                        if (strcmp(token2, "B") == 0){
+                        if (strcmp(token2, "B") == 0)
+                        {
                             voterVote = 66;
                         }
-                        else if (strcmp(token2, "R") == 0){
+                        else if (strcmp(token2, "R") == 0)
+                        {
                             voterVote = 82;
                         }
-                        else if (strcmp(token2, "0") == 0){
+                        else if (strcmp(token2, "0") == 0)
+                        {
                             voterID = 48;
                         }
-                        else if (strcmp(token2, "1") == 0){
+                        else if (strcmp(token2, "1") == 0)
+                        {
                             voterID = 49;
                         }
-                        else if (strcmp(token2, "2") == 0){
+                        else if (strcmp(token2, "2") == 0)
+                        {
                             voterID = 50;
                         }
-                        else if (strcmp(token2, "3") == 0){
+                        else if (strcmp(token2, "3") == 0)
+                        {
                             voterID = 51;
                         }
-                        else if (strcmp(token2, "4") == 0){
+                        else if (strcmp(token2, "4") == 0)
+                        {
                             voterID = 52;
                         }
-                        else if (strcmp(token2, "5") == 0){
+                        else if (strcmp(token2, "5") == 0)
+                        {
                             voterID = 53;
                         }
-                        else if (strcmp(token2, "6") == 0){
+                        else if (strcmp(token2, "6") == 0)
+                        {
                             voterID = 54;
                         }
-                        else if (strcmp(token2, "7") == 0){
+                        else if (strcmp(token2, "7") == 0)
+                        {
                             voterID = 55;
                         }
-                        else if (strcmp(token2, "8") == 0){
+                        else if (strcmp(token2, "8") == 0)
+                        {
                             voterID = 56;
                         }
-                        else if (strcmp(token2, "9") == 0){
+                        else if (strcmp(token2, "9") == 0)
+                        {
                             voterID = 56;
                         }
-                        
 
                         token2 = strtok(NULL, ",");
                     }
@@ -756,17 +776,17 @@ static void udp_server_task(void *pvParameters)
                     RecvFlag = 1;
                     irMsgFlag = 0;
                 }
-                // printf("recv_status is %s\n, recv_ID is %s\n, reccv_deviceAge is %s\n, recv_leaderHeartbeat is %s \n", recv_status, recv_ID, recv_deviceAge, recv_leaderHeartbeat);
 
-                // ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
-                // ESP_LOGI(TAG, "%s", rx_buffer);
+                ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
+                printf("recv_status is %s, recv_ID is %s, recv_deviceAge is %s, recv_leaderHeartbeat is %s \n", recv_status, recv_ID, recv_deviceAge, recv_leaderHeartbeat);
+                ESP_LOGI(TAG, "%s", rx_buffer);
 
                 // Check device state and handle incoming data accordingly
                 int myID_num = atoi(myID);
                 int recv_ID_num = atoi(recv_ID);
                 if (deviceState == ELECTION_STATE)
                 {
-                    printf("ELECTION STATE\n");
+                    printf("ELECTION STATE and timeout is %d\n", timeout);
                     strcpy(status, "No_Leader"); // Status is "No_Leader"
                     strcpy(transmitting, "Yes"); // Continue transmitting
                     if (myID_num < recv_ID_num)
@@ -784,7 +804,7 @@ static void udp_server_task(void *pvParameters)
                 }
                 else if (deviceState == FOLLOWER_STATE)
                 {
-                    printf("FOLLOWER STATE\n");
+                    printf("FOLLOWER STATE with timeout %d\n", timeout);
                     udpTimer = UDP_TIMER * 2;
                     strcpy(transmitting, "No"); // Stop transmitting
                     if (strcmp(recv_deviceAge, "New") == 0)
@@ -841,7 +861,7 @@ static void udp_server_task(void *pvParameters)
 
 //UDP client
 char HOST_IP_ADDR[MAX] = "192.168.1.171";
-#define NODE_IP_ADDR "192.168.1.186"
+#define NODE_IP_ADDR "192.168.1.190"
 #define PORT2 9002
 
 static void
@@ -915,12 +935,12 @@ udp_client_task(void *pvParameters)
                     strcat(data, leaderHeartbeat);
 
                     payload = data;
-                    // printf("payload is: %s", payload);
+                    printf("payload is: %s and timeout is %d \n", payload, timeout);
                     // printf("\n");
                     // printf("7\n");
                     int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
                     // printf("8\n");
-                    strcpy(deviceAge, "Old");
+
                     // printf(deviceAge);
                     // printf("\n");
                     if (err < 0)
@@ -936,6 +956,7 @@ udp_client_task(void *pvParameters)
 
                     udpTimer = UDP_TIMER;
                 }
+                strcpy(deviceAge, "Old");
             }
             if (RecvFlag == 1 && deviceState == LEADER_STATE)
             {
@@ -949,46 +970,49 @@ udp_client_task(void *pvParameters)
                 printf("voterID inside udp_client is %d ", voterID);
                 printf("\n");
 
-                if (voterVote == 66) {
+                if (voterVote == 66)
+                {
                     strcpy(voterVote_char, "B");
                 }
-                else if (voterVote == 82) {
+                else if (voterVote == 82)
+                {
                     strcpy(voterVote_char, "R");
                 }
-                
-                switch (voterID) {
-                    case 48:
-                        strcpy(voterID_char, "0");
-                        break;
-                    case 49:
-                        strcpy(voterID_char, "1");
-                        break;
-                    case 50:
-                        strcpy(voterID_char, "2");
-                        break;
-                    case 51:
-                        strcpy(voterID_char, "3");
-                        break;
-                    case 52:
-                        strcpy(voterID_char, "4");
-                        break;
-                    case 53:
-                        strcpy(voterID_char, "5");
-                        break;
-                    case 54:
-                        strcpy(voterID_char, "6");
-                        break;
-                    case 55:
-                        strcpy(voterID_char, "7");
-                        break;
-                    case 56:
-                        strcpy(voterID_char, "8");
-                        break;
-                    case 57:
-                        strcpy(voterID_char, "9");
-                        break;
+
+                switch (voterID)
+                {
+                case 48:
+                    strcpy(voterID_char, "0");
+                    break;
+                case 49:
+                    strcpy(voterID_char, "1");
+                    break;
+                case 50:
+                    strcpy(voterID_char, "2");
+                    break;
+                case 51:
+                    strcpy(voterID_char, "3");
+                    break;
+                case 52:
+                    strcpy(voterID_char, "4");
+                    break;
+                case 53:
+                    strcpy(voterID_char, "5");
+                    break;
+                case 54:
+                    strcpy(voterID_char, "6");
+                    break;
+                case 55:
+                    strcpy(voterID_char, "7");
+                    break;
+                case 56:
+                    strcpy(voterID_char, "8");
+                    break;
+                case 57:
+                    strcpy(voterID_char, "9");
+                    break;
                 }
-                
+
                 printf("voterID_char is %s \n", voterID_char);
                 printf("voterVote_char is %s \n", voterVote_char);
 
@@ -1017,49 +1041,54 @@ udp_client_task(void *pvParameters)
                 // struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
                 // socklen_t socklen = sizeof(source_addr);
                 RecvFlag = 0;
-            } else if (RecvFlag == 1 && deviceState != LEADER_STATE) {
+            }
+            else if (RecvFlag == 1 && deviceState != LEADER_STATE)
+            {
                 dest_addr.sin_addr.s_addr = inet_addr(leaderIP);
 
                 printf("SENDING TO POLL LEADER \n");
 
-                if (voterVote == 66) {
+                if (voterVote == 66)
+                {
                     strcpy(voterVote_char, "B");
                 }
-                else if (voterVote == 82) {
+                else if (voterVote == 82)
+                {
                     strcpy(voterVote_char, "R");
                 }
-                
-                switch (voterID) {
-                    case 48:
-                        strcpy(voterID_char, "0");
-                        break;
-                    case 49:
-                        strcpy(voterID_char, "1");
-                        break;
-                    case 50:
-                        strcpy(voterID_char, "2");
-                        break;
-                    case 51:
-                        strcpy(voterID_char, "3");
-                        break;
-                    case 52:
-                        strcpy(voterID_char, "4");
-                        break;
-                    case 53:
-                        strcpy(voterID_char, "5");
-                        break;
-                    case 54:
-                        strcpy(voterID_char, "6");
-                        break;
-                    case 55:
-                        strcpy(voterID_char, "7");
-                        break;
-                    case 56:
-                        strcpy(voterID_char, "8");
-                        break;
-                    case 57:
-                        strcpy(voterID_char, "9");
-                        break;
+
+                switch (voterID)
+                {
+                case 48:
+                    strcpy(voterID_char, "0");
+                    break;
+                case 49:
+                    strcpy(voterID_char, "1");
+                    break;
+                case 50:
+                    strcpy(voterID_char, "2");
+                    break;
+                case 51:
+                    strcpy(voterID_char, "3");
+                    break;
+                case 52:
+                    strcpy(voterID_char, "4");
+                    break;
+                case 53:
+                    strcpy(voterID_char, "5");
+                    break;
+                case 54:
+                    strcpy(voterID_char, "6");
+                    break;
+                case 55:
+                    strcpy(voterID_char, "7");
+                    break;
+                case 56:
+                    strcpy(voterID_char, "8");
+                    break;
+                case 57:
+                    strcpy(voterID_char, "9");
+                    break;
                 }
 
                 memset(data, 0, sizeof(data));
@@ -1087,49 +1116,54 @@ udp_client_task(void *pvParameters)
                 // struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
                 // socklen_t socklen = sizeof(source_addr);
                 RecvFlag = 0;
-            } else if (sendFlag == 1 && deviceState == LEADER_STATE) {
+            }
+            else if (sendFlag == 1 && deviceState == LEADER_STATE)
+            {
                 dest_addr.sin_addr.s_addr = inet_addr(NODE_IP_ADDR);
 
                 printf("SENDING TO NODE SERVER \n");
 
-                if (myColor == 66) {
+                if (myColor == 66)
+                {
                     strcpy(voterVote_char, "B");
                 }
-                else if (myColor == 82) {
+                else if (myColor == 82)
+                {
                     strcpy(voterVote_char, "R");
                 }
-                
-                switch (myID_CHAR) {
-                    case 48:
-                        strcpy(voterID_char, "0");
-                        break;
-                    case 49:
-                        strcpy(voterID_char, "1");
-                        break;
-                    case 50:
-                        strcpy(voterID_char, "2");
-                        break;
-                    case 51:
-                        strcpy(voterID_char, "3");
-                        break;
-                    case 52:
-                        strcpy(voterID_char, "4");
-                        break;
-                    case 53:
-                        strcpy(voterID_char, "5");
-                        break;
-                    case 54:
-                        strcpy(voterID_char, "6");
-                        break;
-                    case 55:
-                        strcpy(voterID_char, "7");
-                        break;
-                    case 56:
-                        strcpy(voterID_char, "8");
-                        break;
-                    case 57:
-                        strcpy(voterID_char, "9");
-                        break;
+
+                switch (myID_CHAR)
+                {
+                case 48:
+                    strcpy(voterID_char, "0");
+                    break;
+                case 49:
+                    strcpy(voterID_char, "1");
+                    break;
+                case 50:
+                    strcpy(voterID_char, "2");
+                    break;
+                case 51:
+                    strcpy(voterID_char, "3");
+                    break;
+                case 52:
+                    strcpy(voterID_char, "4");
+                    break;
+                case 53:
+                    strcpy(voterID_char, "5");
+                    break;
+                case 54:
+                    strcpy(voterID_char, "6");
+                    break;
+                case 55:
+                    strcpy(voterID_char, "7");
+                    break;
+                case 56:
+                    strcpy(voterID_char, "8");
+                    break;
+                case 57:
+                    strcpy(voterID_char, "9");
+                    break;
                 }
 
                 memset(data, 0, sizeof(data));
@@ -1157,7 +1191,7 @@ udp_client_task(void *pvParameters)
                 // struct sockaddr_in source_addr; // Large enough for both IPv4 or IPv6
                 // socklen_t socklen = sizeof(source_addr);
                 sendFlag = 0;
-            } 
+            }
             // int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer) - 1, 0, (struct sockaddr *)&source_addr, &socklen);
 
             // Error occurred during receiving
