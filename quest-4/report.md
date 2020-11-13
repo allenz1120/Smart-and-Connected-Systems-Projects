@@ -65,6 +65,12 @@ More information about how this was implemented in the code can be found in the 
 RTOS, UART, sockets.h, GPIO, timer.h
 
 Attribution to Brian Macomber for showing us how to handle two buttons using RTOS tasks
+
+IR Communication: http://whizzer.bu.edu/briefs/design-patterns/dp-irtxrx
+
+Leader Election Wiki: https://en.wikipedia.org/wiki/Leader_election
+
+BUlly Algorithm: https://en.wikipedia.org/wiki/Bully_algorithm
 ## References
 
 -----
