@@ -25,7 +25,7 @@ In the LEADER_STATE, the FOB disregards the general timeout varibale and only us
 ### UDP Payload
 Each FOB sends a UDP message when the UDP timer arrives at zero, and it contains information about the status, myID, deviceAge, and leaderHeartbeat (lines 912 - 960). It is then parsed at the receiving server using strtok and delimiting using "," (lines 651 - 689). 
 
-###  Leader Election Section -------------------------------------------------------------------------------------------
+###  Leader Election Section End -------------------------------------------------------------------------------------------
 
 The majority of the election handling is done inside the UDP client and server tasks. The "udp_server_task" on line 560 uses a series of conditionals to handle state changing of the fob after receiving leader election data over UDP. On line 655, a for loop deconstructs the received payload, determines if it contains leader election data or poll data, and stores its contents in related variables. 
 
