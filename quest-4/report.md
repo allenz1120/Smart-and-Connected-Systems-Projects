@@ -66,9 +66,12 @@ Any additional information about communication via sockets between node and the 
 ### Web Client displaying voting data:
 ![image2](https://user-images.githubusercontent.com/50682462/99131140-5a21d200-25e0-11eb-90dd-42adcbbd6232.png)
 
+### ESP-IDF Command Prompt:
 ![image3](https://user-images.githubusercontent.com/50682462/99131142-5b52ff00-25e0-11eb-9b0b-206afc4cca15.png)
 
+
 ![image4](https://user-images.githubusercontent.com/50682462/99131145-5c842c00-25e0-11eb-99cf-0476b86f2ad4.jpeg)
+
 
 ![image5](https://user-images.githubusercontent.com/50682462/99131146-5db55900-25e0-11eb-9372-4b8d8e9fea8b.jpeg)
 
