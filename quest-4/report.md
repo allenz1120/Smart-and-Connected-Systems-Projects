@@ -61,15 +61,15 @@ Any additional information about communication via sockets between node and the 
 ### Investigative Question
 There are many different ways we could hack our system. The first 5 that we thought of were: 1) Secuirty of the receiver/transmitter communication. 2) Secuirty of the UDP socket communication. 3) Security of the web client. 4) Secuirty of voter and vote information in the Database. 5) Physical Secuirty of the RaspberryPi.
 
-1) The receiver and transmitter is a huge secuirty issue since anyone could create their own receiver and pretend to be the poll leader
+1) The receiver and transmitter is a huge secuirty issue since anyone could create their own receiver and pretend to be the poll leader. A solution to this would be to encrypt the data so that it would be more difficult to interpret.
 
-2)
+2) The problem with UDP communication is there is no way to ensure that the person sending packets is authorized to do so. In this case, bad guys could potentiall be sending data packets to our server. To mitigate this we could switch to TCP communication where there is a handshake present before any actual data is transmitted. This makes it so that there is no sym/ack talking like UDP has. Therefore we make sure that the person receiving the data is authorized to do so. 
 
-3)
+3) Client attack is a big secuirty issue. There are plenty of client attacks that happen frequently and hackers have a large array of options to do so. However, there are a few ways we can help protect our client. Yet the best way we could stop these attacks is to use a Mutation Observer API: this allows us to watch what changes are being made to the webpage and we can make a list of allowed mutations. Therefore we can block mutations that are not allowed, thus not allowing bad guys to access our data. 
 
-4)
+4) In this project database secuirty is crucial, we would not want someone skewing data of an election. The first way we would want to stop this is to not use dynamic SQL which we are currently doing (i.e, we don't want to construct queries without user input). Additionally, we want to be sure that we assign unqiue ID's to anyone who wants access to the database (i.e filtering any sort of address that is not on a pre-determined list).
 
-5)
+5) Physical Secuirty of our current rasperryPi is the last problem we found. A bad guy could take our pi, disconnect it, or connect hacker tools directly to it on our home network. This is very dangerous to our voting system. One way to stop this is to hide the Pi in a unique location and not have it directly connected to our router in our home or some sort of badge access system to the Pi.
 
 ## Sketches and Photos
 
@@ -90,7 +90,7 @@ There are many different ways we could hack our system. The first 5 that we thou
 
 
 ## Video Demo
-- Link: 
+- Link (Shared on Google Drive): https://drive.google.com/file/d/1ujHgcfhkwohG4mUUZC0hylFEyyndCF4o/view?usp=sharing
 
 
 ## Modules, Tools, Source Used Including Attribution
