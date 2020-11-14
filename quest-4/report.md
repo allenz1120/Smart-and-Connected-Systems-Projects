@@ -58,6 +58,19 @@ The front-end web client set-up is very simple. We decided to store all fob info
 
 Any additional information about communication via sockets between node and the front end can be found in the code folder README. 
 
+### Investigative Question
+There are many different ways we could hack our system. The first 5 that we thought of were: 1) Secuirty of the receiver/transmitter communication. 2) Secuirty of the UDP socket communication. 3) Security of the web client. 4) Secuirty of voter and vote information in the Database. 5) Physical Secuirty of the RaspberryPi.
+
+1) The receiver and transmitter is a huge secuirty issue since anyone could create their own receiver and pretend to be the poll leader
+
+2)
+
+3)
+
+4)
+
+5)
+
 ## Sketches and Photos
 
 ### RaspberryPi node console, displaying received information from c program:
