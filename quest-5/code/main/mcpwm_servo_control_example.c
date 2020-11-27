@@ -154,7 +154,7 @@ void calibrateESC()
 int dt_complete = 0;
 
 int dt = 100;
-int setpoint = 75;
+int setpoint = 100;
 
 float previous_error = 0.00; // Set up PID loop
 float integral = 0.00;
@@ -173,18 +173,24 @@ void PID()
     while (1)
     {
         error = setpoint - range;
-        printf("Error is: %d\n", error);
-        if (error > 25)
+        printf("\nError is: %d\n", error);
+        if (error > 49)
         {
             mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1400);
+            printf("Range: %d \n", range);
+            printf("1400 \n");
         }
         else if (error > 10)
         {
-            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1300);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1305);
+            printf("Range: %d \n", range);
+            printf("1300 \n");
         }
         else if (error <= 5)
         {
-            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1265);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1285);
+            printf("Range: %d \n", range);
+            printf("1280 \n");
         }
 
         integral = integral + error * dt;
@@ -234,28 +240,35 @@ static void print_char_val_type(esp_adc_cal_value_t val_type)
     }
 }
 
-// void steering_control(void *arg)
-// {
-//     uint32_t right, center, left;
+void steering_control(void *arg)
+{
+    uint32_t right, center, left;
 
-//     while (1)
-//     {
+    while (1)
+    {
 
-//         //count = 90;
+        //count = 90;
 
-//         right = steering_per_degree_init(0);
-//         center = steering_per_degree_init(105);
-//         left = steering_per_degree_init(180);
-//         mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, right);
-//         vTaskDelay(1000 / portTICK_RATE_MS);
-//         mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, center);
-//         vTaskDelay(1000 / portTICK_RATE_MS);
-//         mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, left);
-//         vTaskDelay(1000 / portTICK_RATE_MS);
-//         mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, center);
-//         vTaskDelay(1000 / portTICK_RATE_MS);
-//     }
-// }
+        right = steering_per_degree_init(0);
+        slightyMoreRight = steer_per_degree_init(35);
+        slightlyRight = sttering_per_degree_init(70);
+
+        center = steering_per_degree_init(105);
+
+        left = steering_per_degree_init(180);
+        slightlyMoreLeft = steer_per_degree_init(150);
+        slightlyLeft = steer_per_degree_init(120);
+
+        mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, right);
+        vTaskDelay(1000 / portTICK_RATE_MS);
+        mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, center);
+        vTaskDelay(1000 / portTICK_RATE_MS);
+        mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, left);
+        vTaskDelay(1000 / portTICK_RATE_MS);
+        mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, center);
+        vTaskDelay(1000 / portTICK_RATE_MS);
+    }
+}
 
 void speedCalc(void *arg)
 {
@@ -264,7 +277,7 @@ void speedCalc(void *arg)
         counter = 0;
         vTaskDelay(100);
         printf("Counter: %d \n", counter);
-        float wheelSpeed = (counter * (2 * 3.14159 * 7 / 6)) / 100;
+        float wheelSpeed = (counter * (2 * 3.14159 * 7 / 12)) / 100;
         printf("Wheel Speed: %.1f m/s \n", wheelSpeed);
         counter = 0;
     }
@@ -309,9 +322,38 @@ void opticalData(void *arg)
     }
 }
 
+void ultrasonicData(void *arg)
+{
+    //Continuously sample ADC1
+    while (1)
+    {
+        uint32_t adc_reading = 0;
+        //Multisampling
+        for (int i = 0; i < NO_OF_SAMPLES; i++)
+        {
+            if (unit == ADC_UNIT_1)
+            {
+                adc_reading += adc1_get_raw((adc1_channel_t)channel);
+            }
+            else
+            {
+                int raw;
+                adc2_get_raw((adc2_channel_t)channel, ADC_WIDTH_BIT_12, &raw);
+                adc_reading += raw;
+            }
+        }
+        adc_reading /= NO_OF_SAMPLES;
+        //Convert adc_reading to voltage in mV
+        uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
+        uint32_t vcm = 3.222;  //conversion to get volts per centimeter. This is found by 3.3V / 1024
+        range = voltage / vcm; //calculation to get range in centimeters.
+        printf("Raw: %d\tCentimeters: %dcm\n", adc_reading, range);
+        vTaskDelay(pdMS_TO_TICKS(1000)); //1 second delay
+    }
+}
+
 void app_main(void)
 {
-
     pwm_init();
     calibrateESC();
 
@@ -340,34 +382,7 @@ void app_main(void)
     adc_chars = calloc(1, sizeof(esp_adc_cal_characteristics_t));
     esp_adc_cal_value_t val_type = esp_adc_cal_characterize(unit, atten, ADC_WIDTH_BIT_12, DEFAULT_VREF, adc_chars);
     print_char_val_type(val_type);
-
-    // xTaskCreate(speedCalc, "speedCalc", 4096, NULL, 5, NULL);
-    // xTaskCreate(opticalData, "opticalData", 4096, NULL, 5, NULL);
-
-    //Continuously sample ADC1
-    while (1)
-    {
-        uint32_t adc_reading = 0;
-        //Multisampling
-        for (int i = 0; i < NO_OF_SAMPLES; i++)
-        {
-            if (unit == ADC_UNIT_1)
-            {
-                adc_reading += adc1_get_raw((adc1_channel_t)channel);
-            }
-            else
-            {
-                int raw;
-                adc2_get_raw((adc2_channel_t)channel, ADC_WIDTH_BIT_12, &raw);
-                adc_reading += raw;
-            }
-        }
-        adc_reading /= NO_OF_SAMPLES;
-        //Convert adc_reading to voltage in mV
-        uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
-        uint32_t vcm = 3.222;  //conversion to get volts per centimeter. This is found by 3.3V / 1024
-        range = voltage / vcm; //calculation to get range in centimeters.
-        printf("Raw: %d\tCentimeters: %dcm\n", adc_reading, range);
-        vTaskDelay(pdMS_TO_TICKS(1000)); //1 second delay
-    }
+    xTaskCreate(ultrasonicData, "ultrasonicData", 4096, NULL, 5, NULL);
+    xTaskCreate(speedCalc, "speedCalc", 4096, NULL, 5, NULL);
+    xTaskCreate(opticalData, "opticalData", 4096, NULL, 5, NULL);
 }
