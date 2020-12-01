@@ -57,6 +57,8 @@ The alphanumeric display was used to dynamically display the crawler's speed. To
 ### UDP Communication
 To turn the crawler on/off wirelessly, we connected a node.js server to the ESP through UDP socket connections using a home router. From the server we have a button that sends a toggle message which is received from the udp_client_task inside the c program. This message toggles a boolean variable 'startCrawler' which starts as false. Since we only want to stop the car from driving we insert a loop into the PID task that is enabled by this variable. So when the boolean is true, the car continues to drive, and when it is false, it stops. 
 
+## Investigative Question
+We think the best way to implement adaptive cruise control would be to add another sensor. In this case, we would most likely add another microLidar sensor as it is the most accurate. We would place this sensor on the back of the crawler forcing it to maintain a distance between the car in front of it and the car behind it. This way it would maintain an even more constant speed and be even more accurate. 
 
 ## Sketches and Photos
 
