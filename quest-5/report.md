@@ -35,14 +35,10 @@ For this quest, we were tasked with creating a cruise control and collision avoi
 ## Solution Design
 
 ### PID Speed Control and Ultrasonic Sensing
-For our speed control algorithm we used PID. While maintaining integral, previous error, and derivitave variables, we used the setpoint variable to determine the output of the algorithm. We executed the following instructions to determine the output to be sent to the wheel servo:
+For our speed control algorithm we used PID. While maintaining the error, setpoint, and range variables, we are able to determine the output/speed to be sent to the drive servo. We executed the following instruction to determine the output to be sent to the wheel servo:
 
   - error = setpoint - range
-  - integral = integral + error * dt
-  - derivative = (error - previous_error) / dt;
-  - previous_error = error;
-  - output = Kp * error + Ki * integral + Kd * derivative;
-
+  
 We calculate error here as the current distance from the object in front of the crawler and a setpoint of 100cm. Determining if the crawler is reading less than 25cm or greater than 25cm we slowly decrease the wheel speed and come to a stop or we continue driving straight.
             
 An ultrasonic sensor which is mounted at the front of our car is constantly checking how close we are to the nearest object and continues to output a range. The ultrasonic sensor and our range value is used hand in hand with PID; specifically, we set our error in PID to be setpoint - range. Looking in with a wider scope, our crawler is able to come to a complete stop and avoid collisions within 20cm of the closest object. 
