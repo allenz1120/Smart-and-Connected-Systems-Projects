@@ -314,7 +314,7 @@ static void lidarRead()
 
         printf("--------------------Distance is: %d-------------------- \n", lidarDistance);
         // }
-        vTaskDelay(100);
+        vTaskDelay(10);
     }
 }
 
@@ -500,50 +500,13 @@ void calibrateESC()
     mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1400); // reset the ESC to neutral (non-moving) value
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
-
-/**
- * @brief Configure MCPWM module
- */
-// void drive_control(void *arg)
-// {
-//     uint32_t angle, count;
-
-//     for (count = 1400; count > 1200; count -= 5)
-//     {
-//         printf("DRIVING--------------------");
-//         mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, count);
-//         vTaskDelay(100 / portTICK_RATE_MS);
-//     }
-
-//     for (count = 1200; count < 1600; count += 5)
-//     {
-//         printf("DRIVING--------------------");
-//         mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, count);
-//         vTaskDelay(100 / portTICK_RATE_MS);
-//     }
-
-//     for (count = 1600; count >= 1400; count -= 5)
-//     {
-//         printf("DRIVING--------------------");
-//         mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, count);
-//         vTaskDelay(100 / portTICK_RATE_MS);
-//     }
-
-//     mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1400);
-//     vTaskDelay(100 / portTICK_RATE_MS);
-
-//     //}
-//     //}
-//     vTaskDelete(NULL);
-// }
-
 /**
  * @brief Configure MCPWM module
  */
 
 int dt_complete = 0;
 
-int dt = 100;
+int dt = 50;
 int setpoint = 100;
 
 float previous_error = 0.00; // Set up PID loop
@@ -564,7 +527,7 @@ void PID()
     {
         error = setpoint - range;
         printf("\nError is: %d\n", error);
-        if (error > 75)
+        if (error > 74)
         {
             // vTaskDelay(10);
             mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1400);
@@ -573,13 +536,13 @@ void PID()
         }
         else if (error > 20)
         {
-            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1305);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1285);
             printf("Range: %d \n", range);
             printf("1300 \n");
         }
         else if (error <= 20)
         {
-            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1285);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 1279);
             printf("Range: %d \n", range);
             printf("1280 \n");
         }
@@ -633,40 +596,47 @@ static void print_char_val_type(esp_adc_cal_value_t val_type)
 
 void steering_control(void *arg)
 {
+
     uint32_t slightlyRight, center, slightlyLeft;
     // right,
     // slightlyMoreRight,
     // left,
     // slightlyMoreLeft,
 
+    vTaskDelay(60);
+
     while (1)
     {
 
         // right = steering_per_degree_init(0);
         // slightyMoreRight = steer_per_degree_init(35);
-        slightlyRight = steering_per_degree_init(90);
+        slightlyRight = steering_per_degree_init(70);
 
         center = steering_per_degree_init(105);
 
         // left = steering_per_degree_init(180);
         // slightlyMoreLeft = steer_per_degree_init(150);
-        slightlyLeft = steering_per_degree_init(120);
-        if (lidarDistance <= 25)
+        slightlyLeft = steering_per_degree_init(140);
+        if (lidarDistance <= 35)
         {
-            printf("GOING RIGHT and LIDAR IS %d ===============\n", lidarDistance);
+            printf("GOING LEFT and LIDAR IS %d ===============\n", lidarDistance);
             mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, slightlyRight);
-            vTaskDelay(1000 / portTICK_RATE_MS);
+            // vTaskDelay(5);
             // mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, center);
-            vTaskDelay(1000 / portTICK_RATE_MS);
+            vTaskDelay(10);
         }
-        else if (lidarDistance >= 30)
+        else if (lidarDistance > 36)
         {
-            printf("GOING LEFT and LIDAR is %d ============== \n", lidarDistance);
+            printf("GOING RIGHT and LIDAR is %d ============== \n", lidarDistance);
             mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, slightlyLeft);
-            vTaskDelay(1000 / portTICK_RATE_MS);
+            // vTaskDelay(5);
             // mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, center);
-            vTaskDelay(1000 / portTICK_RATE_MS);
+            vTaskDelay(10);
         }
+        // else
+        // {
+        //     mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, center);
+        // }
     }
 }
 
@@ -747,8 +717,8 @@ void ultrasonicData(void *arg)
         uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
         uint32_t vcm = 3.222;  //conversion to get volts per centimeter. This is found by 3.3V / 1024
         range = voltage / vcm; //calculation to get range in centimeters.
-        printf("Raw: %d\tCentimeters: %dcm\n", adc_reading, range);
-        vTaskDelay(pdMS_TO_TICKS(1000)); //1 second delay
+        // printf("Raw: %d\tCentimeters: %dcm\n", adc_reading, range);
+        vTaskDelay(20); //random number rn CHANGE!!
     }
 }
 
