@@ -63,6 +63,9 @@ To turn the crawler on/off wirelessly, we connected a node.js server to the ESP 
 
 
 ## Sketches and Photos
+<img src="./images/image1.jpeg" width="45%" />
+<img src="./images/image2.jpeg" width="45%" />
+<img src="./images/image3.jpeg" width="45%" />
 
 ## Supporting Artifacts
 - [Link to video demo](). Not to exceed 120s
