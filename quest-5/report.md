@@ -5,7 +5,7 @@ Date: 2020-11-30
 -----
 
 ## Summary
-For this quest, we were tasked with creating a cruise control and collision avoidance system for an RC car. We achieve this using an ultrasonic sensor, a LIDAR sensor, an optical decoder, and PID control. Using these tools, we are able to stay within +/- 25cm of a centerline, 
+For this quest, we were tasked with creating a cruise control and collision avoidance system for an RC car. We achieve this using an ultrasonic sensor, a LIDAR sensor, an optical encoder, and PID control. Using these tools, we are able to stay within +/- 25cm of a centerline, 
 
 ## Self-Assessment
 
@@ -39,7 +39,7 @@ For this quest, we were tasked with creating a cruise control and collision avoi
 
 ### UDP Communication
 
-### Wheel Speed Detection Using Optical Decoder
+### Wheel Speed Detection Using Optical Encoder
 
 ### Alphanumeric Display
 We used a second I2C bus for the alphanumeric display, choosing two GPIO pins (27 and 33) to accomplish this.
