@@ -59,12 +59,26 @@ To turn the crawler on/off wirelessly, we connected a node.js server to the ESP 
 
 
 ## Sketches and Photos
+
+### Track Bird's Eye View 1:
 <img src="./images/image1.jpeg" width="45%" />
+
+### Track Bird's Eye View 2:
 <img src="./images/image2.jpeg" width="45%" />
+
+### Track Perspective:
 <img src="./images/image3.jpeg" width="45%" />
+
+### Crawler Side View:
 <img src="./images/image4.jpeg" width="45%" />
+
+### Optical Encoder and Back Wheel:
 <img src="./images/image5.jpeg" width="45%" />
+
+### Ultrasonic Sensor:
 <img src="./images/image6.jpeg" width="45%" />
+
+### Alphanumeric Display:
 <img src="./images/image7.jpeg" width="45%" />
 
 ## Supporting Artifacts
