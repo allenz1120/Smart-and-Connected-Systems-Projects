@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-5/code/main
+# Install script for directory: C:/Users/HP/Desktop/EC444/esp-idf/examples/protocols/sockets/udp_client/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/mcpwm_servo_control")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/udp_client")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
