@@ -61,17 +61,11 @@ The alphanumeric display was used to dynmically display the crawler's speed. To 
 ### UDP Communication
 To turn the crawler on/off wirelessly, we connceted a node.js server to the ESP through UDP socket connections using a home router. From the server we have a button that sends a toggle message which is received from the udp_client_task inside the c program. This message toggles a boolean variable 'startCrawler' which starts as false. Since we only want to stop the car from driving we insert a loop into the PID task that is enabled by this variable. So when the boolean is true, the car continues to drive, and when it is false, it stops. 
 
-## Investigative Question
-
 
 ## Sketches and Photos
-<center><img src="./images/ece444.png" width="25%" /></center>  
-<center> </center>
-
 
 ## Supporting Artifacts
 - [Link to video demo](). Not to exceed 120s
-
 
 ## Modules, Tools, Source Used Including Attribution
 
