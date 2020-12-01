@@ -5,7 +5,7 @@ Date: 2020-11-30
 -----
 
 ## Summary
-For this quest, we were tasked with creating a cruise control and collision avoidance system for an RC car. We achieve this using an ultrasonic sensor, a LIDAR sensor, an optical encoder, and PID control. Using these tools, we are able to stay within +/- 25cm of a centerline, 
+For this quest, we were tasked with creating a cruise control and collision avoidance system for an RC car. We achieve this using an ultrasonic sensor, a LIDAR sensor, an optical encoder, and PID control. Using these tools, we are able to stay within +/- 25cm of a centerline, detect hazards in front of the car to stop collisions, and maintain a fixed speed. Finally, we implemented UDP socket communication allowing us to instantaneously start and stop the car from a server. 
 
 ## Self-Assessment
 
@@ -13,13 +13,13 @@ For this quest, we were tasked with creating a cruise control and collision avoi
 
 | Objective Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
-| Objective One | 1 |  1     | 
-| Objective Two | 1 |  1     | 
-| Objective Three | 1 |  1     | 
-| Objective Four | 1 |  1     | 
-| Objective Five | 1 |  1     | 
-| Objective Six | 1 |  1     | 
-| Objective Seven | 1 |  1     | 
+| Controls steering to maintain center of course +/- 25cm for entire length | 1 |  1     | 
+| Uses PID for speed control holding a fixed speed setpoint after startup and before slowdown [0.1-0.4 m/s] | 1 |  1     | 
+| Stops within 20 cm of end without collision | 1 |  1     | 
+| Start and stop instructions issued wirelessly from phone, laptop or ESP) | 1 |  1     | 
+| Measures wheel speed or distance | 1 |  1     | 
+| Uses alpha display to show current distance or speed | 1 |  1     | 
+| Successfully traverses A-B in one go, no hits or nudges | 1 |  1     | 
 
 
 ### Qualitative Criteria
