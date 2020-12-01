@@ -87,8 +87,13 @@ We think the best way to implement adaptive cruise control would be to add anoth
 - [Link to video demo](https://drive.google.com/file/d/1LhutXZ3WRjyGVatawDwrV4Y6XbVXtaqL/view?usp=sharing)
 
 ## Modules, Tools, Source Used Including Attribution
-GPIO, ADC, I2C, UDP, Ultrasonic Sensor, Garmin v4 LIDAR Sensor
-Garmin v4 LIDAR Documentation: http://static.garmin.com/pumac/LIDAR-Lite%20LED%20v4%20Instructions_EN-US.pdf
+- GPIO
+- ADC
+- I2C
+- UDP
+- Ultrasonic Sensor
+- Garmin v4 LIDAR Sensor
+- Garmin v4 LIDAR Documentation: http://static.garmin.com/pumac/LIDAR-Lite%20LED%20v4%20Instructions_EN-US.pdf
 
 ## References
 
