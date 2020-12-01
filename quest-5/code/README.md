@@ -41,9 +41,3 @@ Most importantly, lines 7-17 add the button event listener.
 This is our front side program using the client.js script and setting up the webpage with a single toggle button. 
 
 Line 15 uses a button id to constantly check when the button is pressed which is fetched from the client.js program.
-
-
-
-Also
-- Please provide your name and date in any code submitted
-- Indicate attributrion for any code you have adopted from elsewhere
