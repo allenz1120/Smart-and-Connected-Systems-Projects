@@ -1,11 +1,11 @@
-# Quest Name
-Authors: FirstName1 LastName1, FirstName2 LastName2, FirstName3 LastName 3
+# Cruise Control
+Authors: Allen Zou, Alex Prior, John Kircher
 
-Date: YYYY-MM-DD
+Date: 2020-11-30
 -----
 
 ## Summary
-
+For this quest, we were tasked with creating a cruise control and collision avoidance system for an RC car. We achieve this using an ultrasonic sensor, a LIDAR sensor, an optical decoder, and PID control. Using these tools, we are able to stay within +/- 25cm of a centerline, 
 
 ## Self-Assessment
 
@@ -13,13 +13,13 @@ Date: YYYY-MM-DD
 
 | Objective Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
-| Objective One |  |  1     | 
-| Objective Two |  |  1     | 
-| Objective Three |  |  1     | 
-| Objective Four |  |  1     | 
-| Objective Five |  |  1     | 
-| Objective Six |  |  1     | 
-| Objective Seven |  |  1     | 
+| Objective One | 1 |  1     | 
+| Objective Two | 1 |  1     | 
+| Objective Three | 1 |  1     | 
+| Objective Four | 1 |  1     | 
+| Objective Five | 1 |  1     | 
+| Objective Six | 1 |  1     | 
+| Objective Seven | 1 |  1     | 
 
 
 ### Qualitative Criteria
@@ -33,8 +33,16 @@ Date: YYYY-MM-DD
 
 
 ## Solution Design
+### PID Speed Control and Ultrasonic Sensing
 
+### LIDAR and Steering Control
 
+### UDP Communication
+
+### Wheel Speed Detection Using Optical Decoder
+
+### Alphanumeric Display
+We used a second I2C bus for the alphanumeric display, choosing two GPIO pins (27 and 33) to accomplish this.
 
 ## Sketches and Photos
 <center><img src="./images/ece444.png" width="25%" /></center>  
