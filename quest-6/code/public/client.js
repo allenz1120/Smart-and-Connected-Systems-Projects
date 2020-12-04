@@ -1,15 +1,28 @@
 console.log("clientside js running");
 
-const button = document.querySelector("#onButton");
+const button = document.querySelector("#catButton");
+const button2 = document.querySelector("#dogButton");
 
 button.addEventListener("click", (e) => {
   e.preventDefault();
-  console.log("BUTTON PRESSED");
+  console.log("CAT BUTTON PRESSED");
 
-  fetch("button").then((response)=>{
+  fetch("catButton").then((response) => {
     // response.json().then((data) => {
     // console.log(data.message);
     // })
-    console.log("made it here \n");
+    console.log("catButton pressed \n");
+  });
+});
+
+button2.addEventListener("click", (e) => {
+  e.preventDefault();
+  console.log("DOG BUTTON PRESSED");
+
+  fetch("dogButton").then((response) => {
+    // response.json().then((data) => {
+    // console.log(data.message);
+    // })
+    console.log("dogButton pressed \n");
   });
 });

@@ -136,12 +136,21 @@ app.get("/", function (req, res) {
   res.render("index.hbs");
 });
 
-app.get("/button", (req, res) => {
+app.get("/catButton", (req, res) => {
   //change button press variable to true
-  console.log("BUTTON PRESSED");
+  console.log("CAT BUTTON PRESSED");
   catButton = 1;
   res.send({
-    message: "YEET"
+    message: "YEETING SOME CAT FOOD"
+  });
+});
+
+app.get("/dogButton", (req, res) => {
+  //change button press variable to true
+  console.log("DOG BUTTON PRESSED");
+  dogButton = 1;
+  res.send({
+    message: "YEETING SOME DOG FOOD"
   });
 });
 

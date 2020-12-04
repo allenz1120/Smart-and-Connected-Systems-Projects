@@ -53,6 +53,7 @@
 #include "lwip/sockets.h"
 #include "lwip/sys.h"
 #include <lwip/netdb.h>
+
 // GLOBAL VARIABLES
 int range;         // Global variable for ultrasonic range
 float temperature; // Global variable for thermistor
