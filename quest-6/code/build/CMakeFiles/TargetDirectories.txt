@@ -5,12 +5,12 @@ C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/bootloader.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/gen_project_binary.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/flash.dir
+C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/udp_client.elf.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/monitor.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/app-flash.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/encrypted-flash.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/encrypted-app-flash.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/_project_elf_src.dir
-C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/i2c-accel.elf.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/size.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/size-files.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/CMakeFiles/size-components.dir
@@ -532,3 +532,10 @@ C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/mai
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/main/CMakeFiles/rebuild_cache.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/main/CMakeFiles/list_install_components.dir
 C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/main/CMakeFiles/install/strip.dir
+C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/protocol_examples_common/CMakeFiles/__idf_protocol_examples_common.dir
+C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/protocol_examples_common/CMakeFiles/install/local.dir
+C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/protocol_examples_common/CMakeFiles/install.dir
+C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/protocol_examples_common/CMakeFiles/edit_cache.dir
+C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/protocol_examples_common/CMakeFiles/rebuild_cache.dir
+C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/protocol_examples_common/CMakeFiles/list_install_components.dir
+C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/protocol_examples_common/CMakeFiles/install/strip.dir

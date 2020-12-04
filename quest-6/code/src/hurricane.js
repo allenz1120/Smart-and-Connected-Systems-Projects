@@ -21,19 +21,21 @@ app.set("views", viewsPath);
 app.use(express.static(publicDirPath));
 
 // Global variable to keep track of LED Button status
-let ledButtonPress = 0;
+let catButton = 0;
+let dogButton = 0;
+let Nk = 0;
 
 // Global variables for sensor data
 let thermistorData = 0;
-let accelXData = 0;
-let accelYData = 0;
-let accelZData = 0;
-let accelRollData = 0;
-let accelPitchData = 0;
+let lidarData = 0;
+let ultrasonicData = 0;
+// let accelZData = 0;
+// let accelRollData = 0;
+// let accelPitchData = 0;
 
 // Port and IP
 var PORT = 9001;
-var HOST = "192.168.1.9";
+var HOST = "192.168.1.164";
 
 // Create socket
 var server = dgram.createSocket("udp4");
@@ -53,32 +55,49 @@ server.on("message", function (message, remote) {
   console.log("Payload: ", payload);
 
   // Send Ok acknowledgement
-  if (ledButtonPress == 1) {
-    ledButtonPress = 0;
-    server.send("Ok!", remote.port, remote.address, function (error) {
+  if (catButton == 1) {
+    catButton = 0;
+    server.send("Cat!", remote.port, remote.address, function (error) {
       if (error) {
         console.log("MEH!");
       } else {
-        console.log("Sent: Ok!");
+        console.log("Sent: Cat!");
         data = payload.split(",");
         console.log(data);
 
-        thermistorData = data[5];
-        accelXData = data[0];
-        accelYData = data[1];
-        accelZData = data[2];
-        accelRollData = data[3];
-        accelPitchData = data[4];
+        thermistorData = data[0];
+        lidarData = data[1];
+        ultrasonicData = data[2];
 
         console.log(thermistorData);
-        console.log(accelXData);
-        console.log(accelYData);
-        console.log(accelZData);
-        console.log(accelRollData);
-        console.log(accelPitchData);
+        console.log(lidarData);
+        console.log(ultrasonicData);
       }
     });
-  } else if (ledButtonPress == 0) {
+
+  }
+  else if (dogButton == 1) {
+    dogButton = 0;
+    server.send("Dog!", remote.port, remote.address, function (error) {
+      if (error) {
+        console.log("MEH!");
+      } else {
+        console.log("Sent: Dog!");
+        data = payload.split(",");
+        console.log(data);
+
+        thermistorData = data[0];
+        lidarData = data[1];
+        ultrasonicData = data[2];
+
+        console.log(thermistorData);
+        console.log(lidarData);
+        console.log(ultrasonicData);
+      }
+    });
+  }
+  else {
+    //dogButton = 0;
     server.send("Nk!", remote.port, remote.address, function (error) {
       if (error) {
         console.log("MEH!");
@@ -87,22 +106,26 @@ server.on("message", function (message, remote) {
         data = payload.split(",");
         console.log(data);
 
-        thermistorData = data[5];
-        accelXData = data[0];
-        accelYData = data[1];
-        accelZData = data[2];
-        accelRollData = data[3];
-        accelPitchData = data[4];
+        thermistorData = data[0];
+        lidarData = data[1];
+        ultrasonicData = data[2];
 
         console.log(thermistorData);
-        console.log(accelXData);
-        console.log(accelYData);
-        console.log(accelZData);
-        console.log(accelRollData);
-        console.log(accelPitchData);
+        console.log(lidarData);
+        console.log(ultrasonicData);
       }
     });
   }
+  data = payload.split(",");
+  console.log(data);
+
+  thermistorData = data[0];
+  lidarData = data[1];
+  ultrasonicData = data[2];
+
+  // console.log(thermistorData);
+  // console.log(lidarData);
+  // console.log(ultrasonicData);
 });
 
 // Bind server to port and IP
@@ -116,9 +139,9 @@ app.get("/", function (req, res) {
 app.get("/button", (req, res) => {
   //change button press variable to true
   console.log("BUTTON PRESSED");
-  ledButtonPress = 1;
+  catButton = 1;
   res.send({
-    message:"YEET"
+    message: "YEET"
   });
 });
 
@@ -126,25 +149,17 @@ app.get("/button", (req, res) => {
 
 //Send thermistorData
 app.get("/data1", function (req, res) {
-  res.send(thermistorData);
+  res.send({ data: thermistorData });
 });
-//Send accelXData
+
 app.get("/data2", function (req, res) {
-  res.send(accelXData);
+  res.send({ data: lidarData });
 });
-//Send accelYData
+
 app.get("/data3", function (req, res) {
-  res.send(accelYData);
-}); //Send accelZData
-app.get("/data4", function (req, res) {
-  res.send(accelZData);
-}); //Send accelRollData
-app.get("/data5", function (req, res) {
-  res.send(accelRollData);
-}); //Send accelPitchData
-app.get("/data6", function (req, res) {
-  res.send(accelPitchData);
+  res.send({ data: ultrasonicData });
 });
+
 
 //Serve on localhost:8080
 app.listen(1130);

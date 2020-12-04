@@ -115,7 +115,7 @@ CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=OFF
 
 //Install path prefix, prepended onto install directories.
-CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/i2c-accel
+CMAKE_INSTALL_PREFIX:PATH=C:/Program Files (x86)/udp_client
 
 //Path to a program.
 CMAKE_LINKER:FILEPATH=C:/Users/HP/.espressif/tools/xtensa-esp32-elf/esp-2020r2-8.2.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ld.exe
@@ -159,7 +159,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=i2c-accel
+CMAKE_PROJECT_NAME:STATIC=udp_client
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=C:/Users/HP/.espressif/tools/xtensa-esp32-elf/esp-2020r2-8.2.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib.exe
@@ -407,6 +407,9 @@ __idf_perfmon_LIB_DEPENDS:STATIC=general;__idf_cxx;general;__idf_newlib;general;
 __idf_protobuf-c_LIB_DEPENDS:STATIC=general;__idf_cxx;general;__idf_newlib;general;__idf_freertos;general;__idf_heap;general;__idf_log;general;__idf_lwip;general;__idf_soc;general;__idf_esp_common;general;__idf_xtensa;general;__idf_esp32;
 
 //Dependencies for the target
+__idf_protocol_examples_common_LIB_DEPENDS:STATIC=general;__idf_cxx;general;__idf_newlib;general;__idf_freertos;general;__idf_heap;general;__idf_log;general;__idf_lwip;general;__idf_soc;general;__idf_esp_common;general;__idf_xtensa;general;__idf_esp32;
+
+//Dependencies for the target
 __idf_protocomm_LIB_DEPENDS:STATIC=general;__idf_cxx;general;__idf_newlib;general;__idf_freertos;general;__idf_heap;general;__idf_log;general;__idf_lwip;general;__idf_soc;general;__idf_esp_common;general;__idf_xtensa;general;__idf_esp32;
 
 //Dependencies for the target
@@ -458,12 +461,6 @@ esp-idf_BINARY_DIR:STATIC=C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/ques
 esp-idf_SOURCE_DIR:STATIC=C:/Users/HP/Desktop/esp-idf
 
 //Value Computed by CMake
-i2c-accel_BINARY_DIR:STATIC=C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build
-
-//Value Computed by CMake
-i2c-accel_SOURCE_DIR:STATIC=C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code
-
-//Value Computed by CMake
 mbed TLS_BINARY_DIR:STATIC=C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/mbedtls/mbedtls
 
 //Value Computed by CMake
@@ -477,6 +474,12 @@ mbedtls_LIB_DEPENDS:STATIC=general;__idf_cxx;general;__idf_newlib;general;__idf_
 
 //Dependencies for the target
 mbedx509_LIB_DEPENDS:STATIC=general;__idf_cxx;general;__idf_newlib;general;__idf_freertos;general;__idf_heap;general;__idf_log;general;__idf_lwip;general;__idf_soc;general;__idf_esp_rom;general;__idf_esp_common;general;__idf_xtensa;general;__idf_esp32;general;mbedcrypto;
+
+//Value Computed by CMake
+udp_client_BINARY_DIR:STATIC=C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build
+
+//Value Computed by CMake
+udp_client_SOURCE_DIR:STATIC=C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code
 
 
 ########################
@@ -586,7 +589,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=74
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=75
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

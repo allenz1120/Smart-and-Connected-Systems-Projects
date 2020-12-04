@@ -2,7 +2,7 @@
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/i2c-accel")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/udp_client")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -103,6 +103,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/unity/cmake_install.cmake")
   include("C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/wifi_provisioning/cmake_install.cmake")
   include("C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/main/cmake_install.cmake")
+  include("C:/Users/HP/Desktop/EC444/Team5-Kircher-Prior-Zou/quest-6/code/build/esp-idf/protocol_examples_common/cmake_install.cmake")
 
 endif()
 
