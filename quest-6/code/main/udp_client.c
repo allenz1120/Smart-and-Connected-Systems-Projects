@@ -604,39 +604,52 @@ void ultrasonicData(void *arg)
     }
 }
 
-void catServo(void *arg)
+static void catServo(void *arg)
 {
     uint32_t catAngle;
     uint32_t defaultAngle;
 
     catAngle = servo_per_degree_init(0);
-    defaultAngle = servo_per_degree_init(90);
-
-    if (catFlag == 1)
+    defaultAngle = servo_per_degree_init(200);
+    while (1)
     {
-        mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, catAngle);
-        vTaskDelay(100);
-        mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, defaultAngle);
-        vTaskDelay(100);
-        catFlag = 0;
+        if (catFlag == 1)
+        {
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, catAngle);
+            vTaskDelay(40);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, defaultAngle);
+            // vTaskDelay(200);
+            catFlag = 0;
+        }
+        else
+        {
+            vTaskDelay(10);
+        }
     }
 }
 
-void dogServo(void *arg)
+static void dogServo(void *arg)
 {
     uint32_t dogAngle;
     uint32_t defaultAngle;
 
     dogAngle = servo_per_degree_init(0);
-    defaultAngle = servo_per_degree_init(90);
+    defaultAngle = servo_per_degree_init(200);
 
-    if (dogFlag == 1)
+    while (1)
     {
-        mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, dogAngle);
-        vTaskDelay(100);
-        mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, defaultAngle);
-        vTaskDelay(100);
-        dogFlag = 0;
+        if (dogFlag == 1)
+        {
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, dogAngle);
+            vTaskDelay(40);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, defaultAngle);
+            // vTaskDelay(200);
+            dogFlag = 0;
+        }
+        else
+        {
+            vTaskDelay(10);
+        }
     }
 }
 
@@ -754,8 +767,8 @@ void app_main(void)
     xTaskCreate(thermoHandler, "thermoHandler_task", 4096, NULL, 6, NULL);
     xTaskCreate(ultrasonicData, "ultrasonicData", 4096, NULL, 5, NULL);
     xTaskCreate(lidarRead, "lidarRead", 4096, NULL, 5, NULL);
-    // xTaskCreate(catServo, "catServo", 4096, NULL, 4, NULL);
-    // xTaskCreate(dogServo, "dogServo", 4096, NULL, 4, NULL);
+    xTaskCreate(catServo, "catServo", 4096, NULL, 4, NULL);
+    xTaskCreate(dogServo, "dogServo", 4096, NULL, 4, NULL);
 
     ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0,
                                         256, 0, 0, NULL, 0));
