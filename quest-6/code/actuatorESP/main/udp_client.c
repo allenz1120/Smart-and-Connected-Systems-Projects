@@ -234,7 +234,7 @@ void pwm_init()
 // #elif defined(CONFIG_EXAMPLE_IPV6)
 // #define HOST_IP_ADDR CONFIG_EXAMPLE_IPV6_ADDR
 // #else
-#define HOST_IP_ADDR "192.168.1.164"
+#define HOST_IP_ADDR "192.168.1.190"
 // #endif
 
 #define PORT 9001
@@ -616,6 +616,7 @@ static void catServo(void *arg)
     {
         if (catFlag == 1)
         {
+            printf("catServo task executing ------------ \n");
             mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, catAngle);
             vTaskDelay(40);
             mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, defaultAngle);

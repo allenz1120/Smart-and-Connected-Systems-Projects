@@ -234,7 +234,7 @@ static void timer_evt_task(void *arg)
 // #elif defined(CONFIG_EXAMPLE_IPV6)
 // #define HOST_IP_ADDR CONFIG_EXAMPLE_IPV6_ADDR
 // #else
-#define HOST_IP_ADDR "192.168.1.164"
+#define HOST_IP_ADDR "192.168.1.190"
 // #endif
 
 #define PORT 9001
@@ -599,7 +599,7 @@ void ultrasonicData(void *arg)
             uint32_t voltage = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
             uint32_t vcm = 3.222;  //conversion to get volts per centimeter. This is found by 3.3V / 1024
             range = voltage / vcm; //calculation to get range in centimeters.
-            sprintf(payUltrasonic, "%d cm", range);
+            sprintf(payUltrasonic, "%d", range);
             printf("Ultrasonic Distance: %dcm\n", range);
 
             vTaskDelay(100); //random number rn CHANGE!!
@@ -741,7 +741,7 @@ static void lidarRead()
             //Add the two distances into a 16 bit int
             lidarDistance = (distHigh << 8) + distLow;
 
-            sprintf(payLidar, "%d cm", lidarDistance);
+            sprintf(payLidar, "%d", lidarDistance);
             printf("Lidar Distance is: %d \n", lidarDistance);
             // }
             vTaskDelay(100);
