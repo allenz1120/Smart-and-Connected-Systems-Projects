@@ -29,13 +29,20 @@ let Nk = 0;
 let thermistorData = 0;
 let lidarData = 0;
 let ultrasonicData = 0;
+let dogCounter = 0;
+let catCounter = 0;
+let dogMotion = false;
+let catMotion = false;
+
+const dogFeedDistance = 30;
+const catFeedDistance = 50;
 // let accelZData = 0;
 // let accelRollData = 0;
 // let accelPitchData = 0;
 
 // Port and IP
 var PORT = 9001;
-var HOST = "192.168.1.164";
+var HOST = "192.168.1.153";
 
 // Create socket
 var server = dgram.createSocket("udp4");
@@ -48,84 +55,94 @@ server.on("listening", function () {
   );
 });
 
+//lastLidar = 0;
+//lastUltrasonic = [0, 0, 0, 0, 0];
+
 // On connection, print out received message
 server.on("message", function (message, remote) {
   console.log(remote.address + ":" + remote.port + " - " + message);
   payload = message.toString();
   console.log("Payload: ", payload);
 
-  // Send Ok acknowledgement
-  if (catButton == 1) {
-    catButton = 0;
-    server.send("Cat!", remote.port, remote.address, function (error) {
-      if (error) {
-        console.log("MEH!");
-      } else {
-        console.log("Sent: Cat!");
-        data = payload.split(",");
-        console.log(data);
+  data = payload.split(",");
+  console.log(data);
 
-        thermistorData = data[0];
-        lidarData = data[1];
-        ultrasonicData = data[2];
+  // If received payload is from sensor ESP:
+  if (data[0] == "0") {
+    thermistorData = data[1];
+    lidarData = parseInt(data[2]);
+    ultrasonicData = parseInt(data[3]);
 
-        console.log(thermistorData);
-        console.log(lidarData);
-        console.log(ultrasonicData);
-      }
-    });
-
-  }
-  else if (dogButton == 1) {
-    dogButton = 0;
-    server.send("Dog!", remote.port, remote.address, function (error) {
-      if (error) {
-        console.log("MEH!");
-      } else {
-        console.log("Sent: Dog!");
-        data = payload.split(",");
-        console.log(data);
-
-        thermistorData = data[0];
-        lidarData = data[1];
-        ultrasonicData = data[2];
-
-        console.log(thermistorData);
-        console.log(lidarData);
-        console.log(ultrasonicData);
-      }
-    });
-  }
-  else {
+    console.log(thermistorData);
+    console.log(lidarData);
+    console.log(ultrasonicData);
+    if (lidarData <= dogFeedDistance) {
+      dogCounter++;
+      console.log("INCREMENTING DOG_______________ \n");
+    }
+    if (ultrasonicData <= catFeedDistance) {
+      catCounter++;
+      console.log("INCREMENTING CAT_______________ \n");
+    }
+    if (dogCounter == 5) {
+      console.log("DOG TRIPPED");
+      dogMotion = true;
+      dogCounter = 0;
+    }
+    if (catCounter == 5) {
+      console.log("CAT TRIPPED");
+      catMotion = true;
+      catCounter = 0;
+    }
     //dogButton = 0;
     server.send("Nk!", remote.port, remote.address, function (error) {
       if (error) {
         console.log("MEH!");
       } else {
         console.log("Sent: Nk!");
-        data = payload.split(",");
-        console.log(data);
-
-        thermistorData = data[0];
-        lidarData = data[1];
-        ultrasonicData = data[2];
-
-        console.log(thermistorData);
-        console.log(lidarData);
-        console.log(ultrasonicData);
       }
     });
+
+    // server.send("Nk!", remote.port, remote.address, function (error) {
+    //   if (error) {
+    //     console.log("MEH!");
+    //   } else {
+    //     console.log("Sent: Nk!");
+    //   }
+    // });
+  } else {
+    // Send Ok acknowledgement
+    if (catButton == 1 || catMotion == true) {
+      catButton = 0;
+      catMotion = false;
+      server.send("Cat!", remote.port, remote.address, function (error) {
+        if (error) {
+          console.log("MEH!");
+        } else {
+          console.log("Sent: Cat!");
+        }
+      });
+    } else if (dogButton == 1 || dogMotion == true) {
+      dogButton = 0;
+      dogMotion = false;
+      server.send("Dog!", remote.port, remote.address, function (error) {
+        if (error) {
+          console.log("MEH!");
+        } else {
+          console.log("Sent: Dog!");
+        }
+      });
+    } else {
+      //dogButton = 0;
+      server.send("Nk!", remote.port, remote.address, function (error) {
+        if (error) {
+          console.log("MEH!");
+        } else {
+          console.log("Sent: Nk!");
+        }
+      });
+    }
   }
-  data = payload.split(",");
-  console.log(data);
-
-  thermistorData = data[0];
-  lidarData = data[1];
-  ultrasonicData = data[2];
-
-  // console.log(thermistorData);
-  // console.log(lidarData);
-  // console.log(ultrasonicData);
 });
 
 // Bind server to port and IP
@@ -141,7 +158,7 @@ app.get("/catButton", (req, res) => {
   console.log("CAT BUTTON PRESSED");
   catButton = 1;
   res.send({
-    message: "YEETING SOME CAT FOOD"
+    message: "YEETING SOME CAT FOOD",
   });
 });
 
@@ -150,7 +167,7 @@ app.get("/dogButton", (req, res) => {
   console.log("DOG BUTTON PRESSED");
   dogButton = 1;
   res.send({
-    message: "YEETING SOME DOG FOOD"
+    message: "YEETING SOME DOG FOOD",
   });
 });
 
@@ -169,6 +186,13 @@ app.get("/data3", function (req, res) {
   res.send({ data: ultrasonicData });
 });
 
+app.get("/data4", function (req, res) {
+  res.send({ data: dogMotion });
+});
+
+app.get("/data5", function (req, res) {
+  res.send({ data: catMotion });
+});
 
 //Serve on localhost:8080
 app.listen(1130);

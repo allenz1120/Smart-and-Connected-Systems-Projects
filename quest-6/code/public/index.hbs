@@ -11,7 +11,7 @@
 <body>
   <div class="main-content">
     <p>Bird's Eye View</p>
-    <img src="http://rettopyrrah.ddns.net:8081"></img>
+    <img src="http://team5ec444.ddns.net:8081"></img>
     <div>
       <div>
         <h1>Food Temperature</h1>
@@ -71,6 +71,28 @@
             let ultrasonicData = result.data;
             if (ultrasonicData) {
               document.getElementById('ultrasonic').innerHTML = ultrasonicData;
+            }
+          },
+        });
+
+        $.ajax({
+          url: "/data4",
+          async: false,
+          success: function (result) {
+            let dogMotion = result.data;
+            if (dogMotion) {
+                window.alert("Dog Motion Detected, Feeding Dog");
+            }
+          },
+        });
+
+        $.ajax({
+          url: "/data5",
+          async: false,
+          success: function (result) {
+            let catMotion = result.data;
+            if (catMotion) {
+                window.alert("Cat Motion Detected, Feeding Cat!");
             }
           },
         });
