@@ -74,6 +74,28 @@
             }
           },
         });
+
+        $.ajax({
+          url: "/data4",
+          async: false,
+          success: function (result) {
+            let dogMotion = result.data;
+            if (dogMotion) {
+                window.alert("Dog Motion Detected, Feeding Dog");
+            }
+          },
+        });
+
+        $.ajax({
+          url: "/data5",
+          async: false,
+          success: function (result) {
+            let catMotion = result.data;
+            if (catMotion) {
+                window.alert("Cat Motion Detected, Feeding Cat!");
+            }
+          },
+        });
       }
       setInterval(fetchData, 500);
     </script>
