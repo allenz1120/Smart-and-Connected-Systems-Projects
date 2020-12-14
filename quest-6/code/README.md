@@ -2,6 +2,9 @@
 ## Code README
 
 ### udp_client.c (Actuators)
+The code for the actuator ESP is overall much simpler than the sensor ESP. The actuator ESP is not sending any actual data to the UDP server on the Raspberry Pi. Instead, it repeatedly sends an “empty” packet to the UDP server (line 313) and waits for a response.
+
+The response it receives varies depending on if the Raspberry Pi has detected motion based on the sensor data received from the other ESP. These responses are handled with conditionals beginning on line 343. If no motion is detected, no action is taken and the ESP waits for the next UDP response. If cat or dog motion is detected, its respective flag is tripped, and the servo tasks on line 608 and 633 are executed.
 
 ### udp_client.c (Sensors)
 
