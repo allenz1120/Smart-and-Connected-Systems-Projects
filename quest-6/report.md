@@ -79,7 +79,7 @@ Having a live view of our system was essential to our quest. Any user on the sit
 
 
 ## Supporting Artifacts
-- [Link to video demo](). Not to exceed 120s
+- [Link to video demo](https://drive.google.com/file/d/18BiPUPGwssHJbVwLS8QAKyywe-IlN5lB/view?usp=sharing)
 
 
 ## Modules, Tools, Source Used Including Attribution
