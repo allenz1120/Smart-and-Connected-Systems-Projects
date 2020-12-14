@@ -7,6 +7,15 @@ The code for the actuator ESP is overall much simpler than the sensor ESP. The a
 The response it receives varies depending on if the Raspberry Pi has detected motion based on the sensor data received from the other ESP. These responses are handled with conditionals beginning on line 343. If no motion is detected, no action is taken and the ESP waits for the next UDP response. If cat or dog motion is detected, its respective flag is tripped, and the servo tasks on line 608 and 633 are executed.
 
 ### udp_client.c (Sensors)
+Lines 237 - 347 handle the UDP client on this ESP. It concatenates a payload using the sensor data and adds a "0" at the front of the payload to signify that the message is coming from the sensor ESP. It then sends the packet to the node server on the raspberry pi and listens for a response from the server. It does not have an action based on the response.
+
+Lines 132 - 205 creates the timer isr function and timer task. The timer runs every second and reads data from sensors in a 3 second cycle. Everytime that the timer evt.flag is triggered, we perform this operation on a timerCounter variable: (timerCounter = (timerCounter + 1) % 3). This gives use values of 0, 1, and 2 which are mapped to thermistor, ultrasonic, and lidar respectively. Using this timerCounter variable, we are able to allocate a specific time interval for each sensor to read data without overlap.
+
+Lines 506 - 572 handle reading the thermistor data. It reads the raw adc reading and converts it to celcius.
+
+Lines 574 - 608 handle reading the ultrasonic data. It reads the raw adc reading and converts it to centimeters.
+
+Lines 659 - 750 handle the read, write functions and reading the lidar data using those functions. It initalizes the lidar sensor by writing 0x04 to register 0x00 and reads register 0x01 until it is a low bit. Then, it takes the high and low readings from register 0x10 and 0x11 and adds them to make the 16 bit lidar distance in centimeters.
 
 ### hurricane.js (Node.js Server)
 
