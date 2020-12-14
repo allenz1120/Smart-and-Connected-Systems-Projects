@@ -46,7 +46,7 @@ To enable communication between the two ESP systems and enable remote control, w
 We leveraged DDNS and port forwarding to allow the user to access the pet feeder front end from anywhere in the world over the internet. By pointing the domain "Team5EC444.ddns.net" to our router's external IP address, and port forwarding the Raspberry Pi's web server, we were able to remotely execute the pet feeder's actuators at the press of a button.
 
 ### Camera
-
+Having a live view of our system was essential to our quest. Any user on the site would be able to see their pets in real time and make sure that it is indeed their pet in front of the sensor and that the alert was not a potential glitch or another object. To use the camera we utilized the motion software to pull up a live stream on the pi's address and port 8081, http://team5ec444.ddns.net:8081. This web address is then used in our front end and set to scale for the website. 
 
 
 
