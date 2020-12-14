@@ -97,5 +97,4 @@ Ultrasonic Data Sheet: https://www.maxbotix.com/documents/HRLV-MaxSonar-EZ_Datas
 Lidar Data Sheet: http://static.garmin.com/pumac/LIDAR-Lite%20LED%20v4%20Instructions_EN-US.pdf
 
 Timer Design Pattern Brief: http://whizzer.bu.edu/briefs/design-patterns/dp-timer
------
 
