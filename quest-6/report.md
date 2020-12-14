@@ -42,6 +42,14 @@ The actuators for this project came in the form of two servos. The servos are co
 ### Remote Control and UDP Communication
 To enable communication between the two ESP systems and enable remote control, we create a node server that operates as the middle man. In order to differentiate which ESP we are talking to, at the beginning of each UDP message that is sent to the server, we concatenate a "0" for the sensor ESP and a "1" for the actuator ESP. Using these identifiers, we can parse the sensor payload and update the respective data variables. To detect if an animal is near the feeder, we increment a counter variable that shows how long it has been within the distance threshold that we determined for the food bowl. If the counter hits a value of 5 for lidar or ultrasonic distance, we trip a dogMotion or catMotion flag, respectively. Since the sensor system doesn't require an action after it communicates with the server, we reply with a "Nk!" statement to close the UDP connection. However, the dogMotion and catMotion flags are then used to determine the the action of the servo system.
 
+### DDNS
+
+### Camera
+
+
+
+
+
 
 ## Sketches and Photos
 <center><img src="./images/ece444.png" width="25%" /></center>  
