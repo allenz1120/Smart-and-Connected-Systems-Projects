@@ -1,81 +1,38 @@
 
-# UDP Client example
+## Code README
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+### udp_client.c (Actuators)
 
-The application creates UDP socket and sends message to the predefined port and IP address. After the server's reply, the application prints received reply as ASCII text, waits for 2 seconds and sends another message.
+### udp_client.c (Sensors)
 
-## How to use example
+### hurricane.js (Node.js Server)
 
-In order to create UDP server that communicates with UDP Client example, choose one of the following options.
+This is our Node.js program that handles recieving udp packets from both communicating ESP32's and sending a message back to control the actuators. 
 
-There are many host-side tools which can be used to interact with the UDP/TCP server/client. 
-One command line tool is [netcat](http://netcat.sourceforge.net) which can send and receive many kinds of packets. 
-Note: please replace `192.168.0.167 3333` with desired IPV4/IPV6 address (displayed in monitor console) and port number in the following commands.
+Lines 62-68 handles parsing our payload that is recieved from both c programs on the ESP32's. Our payload for this program contains temperature data, lidar distance, and ultrasonic distance. Additionally, the first index of the payload includes either a 1 or a 0 so we can distinguish between the sensor esp and the actuator esp.
 
-In addition to those tools, simple Python scripts can be found under sockets/scripts directory. Every script is designed to interact with one of the examples.
+Lines 71-104 handle our movement detection alert. First we check to see that we are recieving a message from the sensor esp. If we are then we check if the lidar and ultraosnic distance are less than a preset value of cat and dog feed distance. This distance is used to check if either a cat or dog has been waiting in front of the sensor. If they are, then every packet recieved will increment the dog or cat counter. If these counters get to 5 (5 seconds the pet has been waiting), then it will send a message back to the actuator esp to trip the correct servo. 
 
-### Send UDP packet via netcat
-```
-echo "Hello from PC" | nc -w1 -u 192.168.0.167 3333
-```
+Lines 156-172 get the status of the buttons being pressed on our front end. When these buttons are pressed we change the respective cat or dog button status to 1 to be used in lines 115-146. 
 
-### Receive UDP packet via netcat
-```
-echo "Hello from PC" | nc -w1 -u 192.168.0.167 3333
-```
+Lines 115-146: as mentioned above, these lines check the status of the dog and cat button to see if it has been pressed. If it has, we also send a message back to the actuator esp so it knows to turn the correct servo. 
 
-### UDP server using netcat
-```
-nc -u -l 192.168.0.167 3333
-```
+Lines 177-195 are all of our data routes for collecting temperature, lidar & ultrasonic distance. These are dynamically updated on the front end using ajax calls. 
 
-### Python scripts
-Script example_test.py could be used as a counter part to the udp-client application, ip protocol name (IPv4 or IPv6) shall be stated as argument. Example:
+### client.js (Client)
 
-```
-python example_test.py IPv4
-```
-Note that this script is used in automated tests, as well, so the IDF test framework packages need to be imported;
-please add `$IDF_PATH/tools/ci/python_packages` to `PYTHONPATH`.
+This is the client side js program that sets up our button event listeners to be implemented in the front end. 
+
+Lines 6-28 setup each button handler for the cat and dog buttons. These are to be refernced in the front end. button being the cat button and button2 being the dog button. 
+
+### index.hbs (Front-End)
+
+This is our front end website that is dynaimcally updated with all sensor data, includes two feeding buttons, and a live video feed from the raspberry pi. 
+
+Lines 12-15 setup our raspberry pi address that uses the pi camera to capture a live feed of our system. 
+
+Lines 43-99 include all of our ajax calls that dynamically update all of our data as well as the button event handlers. These ajax calls are very important since we wanted to again, dynamically update all of our data with each udp message recieved. Setting the async value to false in each of these allowed us to do so. 
+
+Lastly, Lines 104,106, and 109 include the buttons to be displayed on the page using button ID's and including the button handlers from the client.js program. 
 
 
-## Hardware Required
-
-This example can be run on any commonly available ESP32 development board.
-
-## Configure the project
-
-```
-idf.py menuconfig
-```
-
-Set following parameters under Example Configuration Options:
-
-* Set `IP version` of example to be IPV4 or IPV6.
-
-* Set `IPV4 Address` in case your chose IP version IPV4 above.
-
-* Set `IPV6 Address` in case your chose IP version IPV6 above.
-
-* Set `Port` number that represents remote port the example will send data and receive data from.
-
-Configure Wi-Fi or Ethernet under "Example Connection Configuration" menu. See "Establishing Wi-Fi or Ethernet Connection" section in [examples/protocols/README.md](../../README.md) for more details.
-
-
-## Build and Flash
-
-Build the project and flash it to the board, then run monitor tool to view serial output:
-
-```
-idf.py -p PORT flash monitor
-```
-
-(To exit the serial monitor, type ``Ctrl-]``.)
-
-See the Getting Started Guide for full steps to configure and use ESP-IDF to build projects.
-
-
-## Troubleshooting
-
-Start server first, to receive data sent from the client (application).
