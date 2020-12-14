@@ -83,8 +83,19 @@ Having a live view of our system was essential to our quest. Any user on the sit
 
 
 ## Modules, Tools, Source Used Including Attribution
+DDNS, Pi-Webcam, ADC, Ultrasonic sensor, LIDAR sensor, thermistor, actuators, ESP timer
 
 ## References
+DDNS: https://en.wikipedia.org/wiki/Dynamic_DNS
 
+Pi-Webcam: https://www.raspberrypi.org/products/camera-module-v2/?resellerType=home
+
+ADC Example Code: https://github.com/espressif/esp-idf/tree/39f090a4f1dee4e325f8109d880bf3627034d839/examples/peripherals/adc
+
+Ultrasonic Data Sheet: https://www.maxbotix.com/documents/HRLV-MaxSonar-EZ_Datasheet.pdf
+
+Lidar Data Sheet: http://static.garmin.com/pumac/LIDAR-Lite%20LED%20v4%20Instructions_EN-US.pdf
+
+Timer Design Pattern Brief: http://whizzer.bu.edu/briefs/design-patterns/dp-timer
 -----
 
