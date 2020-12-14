@@ -53,8 +53,29 @@ Having a live view of our system was essential to our quest. Any user on the sit
 
 
 ## Sketches and Photos
-<center><img src="./images/ece444.png" width="25%" /></center>  
-<center> </center>
+### Raspberry Pi with Webcam
+<img src="./images/image2.jpeg" width="45%" />
+
+### Close-up of Raspberry Pi with Webcam
+<img src="./images/image3.jpeg" width="45%" />
+
+### Diagram of UDP Communication:
+<img src="./images/image4.jpeg" width="45%" />
+
+### Our cat waiting for some food:
+<img src="./images/image5.jpeg" width="45%" />
+
+### Close-up of LIDAR, Ultrasonic, Thermistor, and Actuators:
+<img src="./images/image6.jpeg" width="45%" />
+
+### Rear/Side View of the Pet Feeder:
+<img src="./images/image7.jpeg" width="45%" />
+
+### Front View of the Pet Feeder:
+<img src="./images/image8.jpeg" width="45%" />
+
+### Close-up View of the Pet Feeder:
+<img src="./images/image9.jpeg" width="45%" />
 
 
 ## Supporting Artifacts
