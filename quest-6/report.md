@@ -43,6 +43,7 @@ The actuators for this project came in the form of two servos. The servos are co
 To enable communication between the two ESP systems and enable remote control, we create a node server that operates as the middle man. In order to differentiate which ESP we are talking to, at the beginning of each UDP message that is sent to the server, we concatenate a "0" for the sensor ESP and a "1" for the actuator ESP. Using these identifiers, we can parse the sensor payload and update the respective data variables. To detect if an animal is near the feeder, we increment a counter variable that shows how long it has been within the distance threshold that we determined for the food bowl. If the counter hits a value of 5 for lidar or ultrasonic distance, we trip a dogMotion or catMotion flag, respectively. Since the sensor system doesn't require an action after it communicates with the server, we reply with a "Nk!" statement to close the UDP connection. However, the dogMotion and catMotion flags are then used to determine the the action of the servo system.
 
 ### DDNS
+We leveraged DDNS and port forwarding to allow the user to access the pet feeder front end from anywhere in the world over the internet. By pointing the domain "Team5EC444.ddns.net" to our router's external IP address, and port forwarding the Raspberry Pi's web server, we were able to remotely execute the pet feeder's actuators at the press of a button.
 
 ### Camera
 
