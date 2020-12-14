@@ -1,11 +1,11 @@
-# Quest Name
-Authors: FirstName1 LastName1, FirstName2 LastName2, FirstName3 LastName 3
+# Remote Pet Feeder
+Authors: Alex Prior, Allen Zou, John Kircher
 
-Date: YYYY-MM-DD
+Date: 2020-12-14
 -----
 
 ## Summary
-
+The purpose of this quest was to implement a remote pet feeder that utilized servo control, ESP32 UDP communications,a camera, and timer based sensor tasks. The final product of this quest was able to read lidar, ultrasonic, and thermistor data every 3 second timer cycle. If a pet entered within a threshold for the lidar or ultrasonic sensors, we would alert the user and dispense food. The users also have a birds eye view of the feeder and remote access for feeding the animals on command. The system additionally uses separate ESPs for sensors and actuators to increase redundancy and increase system security. Both ESPs communicate with a node server hosted on the raspberry pi and communicate using messages sent through UDP packets.
 
 ## Self-Assessment
 
@@ -13,13 +13,13 @@ Date: YYYY-MM-DD
 
 | Objective Criterion | Rating | Max Value  | 
 |---------------------------------------------|:-----------:|:---------:|
-| Objective One |  |  1     | 
-| Objective Two |  |  1     | 
-| Objective Three |  |  1     | 
-| Objective Four |  |  1     | 
-| Objective Five |  |  1     | 
-| Objective Six |  |  1     | 
-| Objective Seven |  |  1     | 
+| Achieves specified function | 1 |  1     | 
+| At least 2 functional actuators | 1 |  1     | 
+| At least 3 functional sensors | 1 |  1     | 
+| At least 1 camera | 1 |  1     | 
+| Demonstrates remote control and data presentation on separate network | 1 |  1     | 
+| Has a time based function | 1 |  1     | 
+| Multiple participating distributed ESP32s | 1 |  1     | 
 
 
 ### Qualitative Criteria
@@ -33,7 +33,14 @@ Date: YYYY-MM-DD
 
 
 ## Solution Design
+### Timer Based Sensor Tasks
+For our pet feeder, we implemented the ultrasonic and lidar sensors to detect pet proximity to the device and a thermistor to monitor room/food temperature. The sensors read data based on a timer task. The timer isr handler flips the evt.flag to 1 every second which causes the timer task to modify a timerCounter variable by incrementing it by 1 and modulo-ing it by 3. This generates key values of 0, 1, and 2 in a 3 second timer cycle. We then use this variable to give each sensor an indiviual time slot to read data and prevents overlapping of sensor readings. The data is then converted into a UDP payload compatible char array. They are then appended and sent to the node server hosted on the raspberry pi (more information found in the Remote Control and UDP Communication section)
 
+### Actuators
+The actuators for this project came in the form of two servos. The servos are controlled on a separate breadboard and ESP32 from the sensors. This ESP consistenly sends a "dummy" UDP message to the node server and awaits a response. If the response from the server is equal to "Cat!" or "Dog!", a respective catFlag or dogFlag variable is tripped. These two variables are then constantly checked by the catServo and dogServo tasks. If the flag for each animal is set to 1, the servo task will execute and rotate 90 degrees and back. Alternatively, if the node server replies with a message "Nk!", the servo tasks do not execute and continue checking the flags.
+
+### Remote Control and UDP Communication
+To enable communication between the two ESP systems and enable remote control, we create a node server that operates as the middle man. In order to differentiate which ESP we are talking to, at the beginning of each UDP message that is sent to the server, we concatenate a "0" for the sensor ESP and a "1" for the actuator ESP. Using these identifiers, we can parse the sensor payload and update the respective data variables. To detect if an animal is near the feeder, we increment a counter variable that shows how long it has been within the distance threshold that we determined for the food bowl. If the counter hits a value of 5 for lidar or ultrasonic distance, we trip a dogMotion or catMotion flag, respectively. Since the sensor system doesn't require an action after it communicates with the server, we reply with a "Nk!" statement to close the UDP connection. However, the dogMotion and catMotion flags are then used to determine the the action of the servo system.
 
 
 ## Sketches and Photos
