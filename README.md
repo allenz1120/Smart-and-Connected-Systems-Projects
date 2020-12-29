@@ -3,7 +3,6 @@ This is the repository includes projects from my Smart and Connected Systems cla
 <br>
 <br>
 ## The order of projects goes from:
-<br>
 Quest 0 - Installs and Blink
 <br>
 Quest 1 - Fish Feeder
