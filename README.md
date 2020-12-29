@@ -2,7 +2,7 @@
 This is the repository includes projects from my Smart and Connected Systems class from Fall 2020. I worked on these projects with my team members Alex Prior and John Kircher. The projects use the ESP32, Raspberry Pi, Ultrasonic, Lidar, Thermistor, and other devices to perform specific functions. For more information on each project (aka quest), inside the individual folders, there are respective READMEs and video demonstration in the report.md. 
 <br>
 <br>
-The order of projects goes from:
+## The order of projects goes from:
 <br>
 Quest 0 - Installs and Blink
 <br>
