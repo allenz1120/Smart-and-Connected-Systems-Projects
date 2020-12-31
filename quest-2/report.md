@@ -4,6 +4,11 @@ Authors: John Kircer, Alex Prior, Allen Zou
 Date: 2020-10-08
 -----
 
+
+## Video Demonstration
+- [Link to video demo](https://drive.google.com/file/d/1S0a1OUo86MVyoaFrnBMyIMuOZZMKdgP6/view?usp=sharing
+).
+
 ## Summary
 Using the ESP32 and its built in ADC channels, we are able to read data from three sensors that report temperature and range data using ultrasonic and IR readings. In addition to that, we are able to visualize the data on a chart using CanvasJS in real time.
 
@@ -61,9 +66,6 @@ CanvasJS charts:
 Tabulate and compare the accuracy and speed of the IR and ultrasonic sensors. Which one would you prefer to use to support driving a robotic car?
 The ultrasonic sensor was much more accurate than the IR sensor. It was a lot more responsive to changes and was easier to locate where it was even pointing. A look at the Maxbotix website also states that IR is a more budget friendly version of range finding. If we are driving a robotic car, we would want it to be safer and more perceptive to obstacles so we want the ultrasonic sensor/ 
 
-## Supporting Artifacts
-- [Link to video demo](https://drive.google.com/file/d/1S0a1OUo86MVyoaFrnBMyIMuOZZMKdgP6/view?usp=sharing
-).
 
 
 ## Modules, Tools, Source Used Including Attribution
