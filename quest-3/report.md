@@ -4,6 +4,11 @@ Authors: Allen Zou, Alex Prior, John Kircher
 Date: 2020-10-23
 -----
 
+
+## Video Demonstration
+- [Link to video demo](https://drive.google.com/file/d/1f9fklLlsxecqIVp7K62db-wnEkJHCFs1/preview).
+
+
 ## Summary
 The goal of this quest was to take thermistor and accelerometer data from the ESP32, send it to a web server created with node.js using UDP sockets, and display this data dynamically on a webpage. The webpage also displays a livestream using the webcam on the Raspberry Pi Zero, and a button for turning an LED on the ESP32’s breadboard on and off. The ESP32 and Raspberry Pi are connected wirelessly, with DDNS and port forwarding being utilized to access the webpage from anywhere in the world. 
 
@@ -76,9 +81,6 @@ Research has determined that a bulk of wireless sensor network power consumption
 Sources for this answer: 
 - https://link.springer.com/article/10.1007/s00779-019-01205-4
 - https://www.sciencedirect.com/science/article/pii/S131915781730023X
-
-## Supporting Artifacts
-- [Link to video demo](https://drive.google.com/file/d/1f9fklLlsxecqIVp7K62db-wnEkJHCFs1/preview).
 
 
 ## Modules, Tools, Source Used Including Attribution
