@@ -4,6 +4,10 @@ Authors: Allen Zou, John Kircher, Alex Prior
 Date: 2020-10-12
 -----
 
+## Video Demonstration
+- Link (Shared on Google Drive): https://drive.google.com/file/d/1ujHgcfhkwohG4mUUZC0hylFEyyndCF4o/view?usp=sharing
+
+
 ## Summary
 The purpose of this quest was to create a secure election process using both NFC and UDP communication between several voting FOBs and a central node.js server with a database for storing voter information and a web server for visualizing the data. One of the voting FOBs is selected to be the "poll leader" using a variation of the bully algorithm, with a new poll leader being elected in the case that the current poll leader fails. 
 
@@ -89,8 +93,6 @@ There are many different ways we could hack our system. The first 5 that we thou
 ![db_img](https://user-images.githubusercontent.com/50682462/99131150-6017b300-25e0-11eb-99c1-9f9945f7d4ea.PNG)
 
 
-## Video Demo
-- Link (Shared on Google Drive): https://drive.google.com/file/d/1ujHgcfhkwohG4mUUZC0hylFEyyndCF4o/view?usp=sharing
 
 
 ## Modules, Tools, Source Used Including Attribution
