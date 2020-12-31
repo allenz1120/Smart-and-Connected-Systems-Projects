@@ -4,6 +4,9 @@ Authors: Allen Zou, Alex Prior, John Kircher
 Date: 2020-11-30
 -----
 
+## Video Demonstration
+- [Link to video demo](https://drive.google.com/file/d/1LhutXZ3WRjyGVatawDwrV4Y6XbVXtaqL/view?usp=sharing)
+
 ## Summary
 For this quest, we were tasked with creating a cruise control and collision avoidance system for an RC car. We achieve this using an ultrasonic sensor, a LIDAR sensor, an optical encoder, and PID control. Using these tools, we are able to stay within +/- 25cm of a centerline, detect hazards in front of the car to stop collisions, and maintain a fixed speed. Finally, we implemented UDP socket communication allowing us to instantaneously start and stop the car from a server. 
 
@@ -83,8 +86,7 @@ We think the best way to implement adaptive cruise control would be to add anoth
 ### Alphanumeric Display:
 <img src="./images/image7.jpeg" width="45%" />
 
-## Supporting Artifacts
-- [Link to video demo](https://drive.google.com/file/d/1LhutXZ3WRjyGVatawDwrV4Y6XbVXtaqL/view?usp=sharing)
+
 
 ## Modules, Tools, Source Used Including Attribution
 - GPIO
