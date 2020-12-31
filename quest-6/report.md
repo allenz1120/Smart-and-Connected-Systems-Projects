@@ -4,6 +4,9 @@ Authors: Alex Prior, Allen Zou, John Kircher
 Date: 2020-12-14
 -----
 
+## Video Demonstration
+- [Link to video demo](https://drive.google.com/file/d/18BiPUPGwssHJbVwLS8QAKyywe-IlN5lB/view?usp=sharing)
+
 ## Summary
 The purpose of this quest was to implement a remote pet feeder that utilized servo control, ESP32 UDP communications,a camera, and timer based sensor tasks. The final product of this quest was able to read lidar, ultrasonic, and thermistor data every 3 second timer cycle. If a pet entered within a threshold for the lidar or ultrasonic sensors, we would alert the user and dispense food. The users also have a birds eye view of the feeder and remote access for feeding the animals on command. The system additionally uses separate ESPs for sensors and actuators to increase redundancy and increase system security. Both ESPs communicate with a node server hosted on the raspberry pi and communicate using messages sent through UDP packets.
 
@@ -78,8 +81,7 @@ Having a live view of our system was essential to our quest. Any user on the sit
 <img src="./images/image9.jpeg" width="45%" />
 
 
-## Supporting Artifacts
-- [Link to video demo](https://drive.google.com/file/d/18BiPUPGwssHJbVwLS8QAKyywe-IlN5lB/view?usp=sharing)
+
 
 
 ## Modules, Tools, Source Used Including Attribution
