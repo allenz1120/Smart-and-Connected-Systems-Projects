@@ -3,6 +3,8 @@ Authors: Anthony Biondo, Alex Prior, Allen Zou
 
 Date: 2020-09-22
 -----
+## Video Demonstration
+- [Click here for Quest 1 Demo](https://drive.google.com/file/d/1JzEWCGhAjof0glUlmwND12N0k9ruO4DT/view?usp=sharing)
 
 ## Summary
 Using the ESP32 board’s built in timer, we created a countdown clock that descended from 120 seconds and rotated a servo 3 times upon hitting 0 seconds. This then loops back and continuously counts down the servo action from 2 minutes.
@@ -56,8 +58,7 @@ In order to coordinate the servo action with the end of the timer we used a larg
 # Investigative question: What approach can you use to make setting the time interval dynamic (not hard coded)? Elaborate.
 Instead of declaring our timer interval statically, we can get user input using the gets() function and prompt the user for their preferred time interval when the program runs. This will allow the users to customize their fish feeder and give them the choice to starve their fish with a 2 day feeding cycle or fatten them up with food every 10 seconds.
 
-## Supporting Artifacts
-- [Click here for Quest 1 Demo](https://drive.google.com/file/d/1JzEWCGhAjof0glUlmwND12N0k9ruO4DT/view?usp=sharing)
+
 
 ## Modules, Tools, Source Used Including Attribution
 We worked with John Kircher who helped us with our thought process for this quest
